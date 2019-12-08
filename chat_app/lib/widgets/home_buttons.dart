@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/curr_screen_provider.dart';
 import '../helpers/common.dart' as common;
 
+FlatButton _createFlatButtons(common.eSCREEN currScreen,
+    common.eSCREEN selectedScreen, Function onPress) {
+  String title = 'CHATS';
+  Color textColor = Colors.white30;
+
+  if (selectedScreen == common.eSCREEN.SCREEN_STATUS) {
+    title = 'STATUS';
+  } else if (selectedScreen == common.eSCREEN.SCREEN_CALLS) {
+    title = 'CALLS';
+  }
+
+  if (selectedScreen == currScreen) {
+    textColor = Colors.white;
+  }
+
+  return FlatButton(
+    child: Text(title, style: TextStyle(color: textColor)),
+    onPressed: onPress,
+  );
+}
+
 class HomeButtons extends StatelessWidget {
-  final common.eSCREEN currScreen;
-  final Function atHomeSetCurrScreen;
-
-  HomeButtons({
-    @required this.currScreen,
-    @required this.atHomeSetCurrScreen,
-  });
-
-  FlatButton _createFlatButtons(common.eSCREEN screen, Function onPress) {
-    String title = 'CHATS';
-    Color textColor = Colors.white30;
-
-    if (screen == common.eSCREEN.SCREEN_STATUS) {
-      title = 'STATUS';
-    } else if (screen == common.eSCREEN.SCREEN_CALLS) {
-      title = 'CALLS';
-    }
-
-    if (screen == currScreen) {
-      textColor = Colors.white;
-    }
-
-    return FlatButton(
-      child: Text(title, style: TextStyle(color: textColor)),
-      onPressed: onPress,
-    );
+  void handleChnageInState(
+      BuildContext context, common.eSCREEN selectedScreen) {
+    Provider.of<CurrScreenProvider>(context).setCurrScreen(selectedScreen);
   }
 
   @override
   Widget build(BuildContext context) {
+    final currScreen = Provider.of<CurrScreenProvider>(context).getCurrScreen;
     return Container(
       color: Theme.of(context).appBarTheme.color,
       height: 50,
@@ -51,13 +52,25 @@ class HomeButtons extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: _createFlatButtons(common.eSCREEN.SCREEN_CHATS, () {}),
+                child: _createFlatButtons(
+                    currScreen,
+                    common.eSCREEN.SCREEN_CHATS,
+                    () => handleChnageInState(
+                        context, common.eSCREEN.SCREEN_CHATS)),
               ),
               Expanded(
-                child: _createFlatButtons(common.eSCREEN.SCREEN_STATUS, () {}),
+                child: _createFlatButtons(
+                    currScreen,
+                    common.eSCREEN.SCREEN_STATUS,
+                    () => handleChnageInState(
+                        context, common.eSCREEN.SCREEN_STATUS)),
               ),
               Expanded(
-                child: _createFlatButtons(common.eSCREEN.SCREEN_CALLS, () {}),
+                child: _createFlatButtons(
+                    currScreen,
+                    common.eSCREEN.SCREEN_CALLS,
+                    () => handleChnageInState(
+                        context, common.eSCREEN.SCREEN_CALLS)),
               ),
             ],
           ),

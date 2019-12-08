@@ -5,27 +5,11 @@
 
 import 'package:flutter/material.dart';
 
-import '../helpers/common.dart' as common;
 import '../widgets/home_buttons.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   static const routeName = '/';
   static const appTitle = 'ChatApp';
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  common.eSCREEN currScreen = common.eSCREEN.SCREEN_CHATS;
-
-  void _setCurrScreen(common.eSCREEN val) {
-    if (currScreen != val) {
-      setState(() {
-        currScreen = val;
-      });
-    }
-  }
 
   void _onSearchButton() {
     return;
@@ -56,10 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: <Widget>[
-          HomeButtons(
-            currScreen: currScreen,
-            atHomeSetCurrScreen: _setCurrScreen,
-          ),
+          HomeButtons(),
         ],
       ),
     );
