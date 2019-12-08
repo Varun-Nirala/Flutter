@@ -9,7 +9,7 @@ class HomeButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).appBarTheme.color,
-      height: 50,
+      height: 52,
       margin: EdgeInsets.all(0),
       padding: EdgeInsets.all(0),
       child: Column(
@@ -17,16 +17,21 @@ class HomeButtons extends StatelessWidget {
           Row(
             children: <Widget>[
               Container(
-                width: 25,
+                width: 50,
+                margin: EdgeInsets.all(0),
+                padding: EdgeInsets.all(0),
                 child: IconButton(
                   icon: Icon(Icons.camera_alt),
                   onPressed: () {},
                   color: Colors.blueGrey,
                 ),
               ),
-              ExpandedFlatButton(screenButton: common.eSCREEN.SCREEN_CHATS),
-              ExpandedFlatButton(screenButton: common.eSCREEN.SCREEN_STATUS),
-              ExpandedFlatButton(screenButton: common.eSCREEN.SCREEN_CALLS),
+              const ExpandedFlatButton(
+                  screenButton: common.eSCREEN.SCREEN_CHATS),
+              const ExpandedFlatButton(
+                  screenButton: common.eSCREEN.SCREEN_STATUS),
+              const ExpandedFlatButton(
+                  screenButton: common.eSCREEN.SCREEN_CALLS),
             ],
           ),
         ],
@@ -43,9 +48,9 @@ class ExpandedFlatButton extends StatelessWidget {
 
   final common.eSCREEN screenButton;
 
-  void stateChanged(
-      BuildContext context, common.eSCREEN selectedScreen) {
-    Provider.of<CurrScreenProvider>(context, listen: false).setCurrScreen(selectedScreen);
+  void stateChanged(BuildContext context, common.eSCREEN selectedScreen) {
+    Provider.of<CurrScreenProvider>(context, listen: false)
+        .setCurrScreen(selectedScreen);
   }
 
   @override
@@ -53,6 +58,7 @@ class ExpandedFlatButton extends StatelessWidget {
     final currScreen = Provider.of<CurrScreenProvider>(context).getCurrScreen;
     String title = 'CHATS';
     Color textColor = Colors.white30;
+    Color barColor = Theme.of(context).primaryColor;
 
     if (screenButton == common.eSCREEN.SCREEN_STATUS) {
       title = 'STATUS';
@@ -62,12 +68,24 @@ class ExpandedFlatButton extends StatelessWidget {
 
     if (screenButton == currScreen) {
       textColor = Colors.white;
+      barColor = Colors.white70;
     }
 
     return Expanded(
-      child: FlatButton(
-        child: Text(title, style: TextStyle(color: textColor)),
-        onPressed: () => stateChanged(context, screenButton),
+      child: Column(
+        children: <Widget>[
+          FlatButton(
+            child: Text(title, style: TextStyle(color: textColor)),
+            onPressed: () => stateChanged(context, screenButton),
+            padding: EdgeInsets.all(0),
+          ),
+          Container(
+            height: 4,
+            color: barColor,
+            padding: EdgeInsets.all(0),
+            margin: EdgeInsets.all(0),
+          ),
+        ],
       ),
     );
   }
