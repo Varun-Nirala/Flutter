@@ -1,11 +1,18 @@
 /*
-  -> The Home Screen
-    -> Display the AppBar
- */
+  Handles the HomeScreen, Show's AppBar which have Search option and MoreButton which show setting
+  It's body contains HomeButtons Widget which have Bar which below Appbar
+*/
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../helpers/common.dart';
+
+import '../provider/contacts_provider.dart';
 
 import '../widgets/home_buttons.dart';
+
+import '../screens/select_contact_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/';
@@ -25,16 +32,8 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(HomeScreen.appTitle),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: _onSearchButton,
-            padding: EdgeInsets.all(0),
-          ),
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: _onMoreButton,
-            padding: EdgeInsets.all(0),
-          ),
+          getSearchIconButton(_onSearchButton),
+          getMoreIconButton(_onMoreButton),
         ],
         elevation: 0,
       ),
@@ -42,6 +41,15 @@ class HomeScreen extends StatelessWidget {
         children: <Widget>[
           HomeButtons(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.chat),
+        onPressed: () async {
+          await Provider.of<ContactsProvider>(context).fetchAndSetContacts();
+          Navigator.of(context).pushNamed(SelectContactScreen.routeName);
+        },
+        backgroundColor: Colors.greenAccent[700],
+        foregroundColor: Colors.white,
       ),
     );
   }
