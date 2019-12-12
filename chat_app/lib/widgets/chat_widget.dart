@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/chat_provider.dart';
+import '../models/chat.dart';
 
 class ChatWidget extends StatelessWidget {
   final String chatId;  // @TODO: Instead of contact we should have a unique id
@@ -15,6 +15,7 @@ class ChatWidget extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
+          height: 500,
           alignment: Alignment.center,
           child: SingleChildScrollView(
             child: ListView.builder(
