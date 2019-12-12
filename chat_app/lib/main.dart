@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:contacts_service/contacts_service.dart';
 
 import './provider/curr_screen_provider.dart';
 import './provider/contacts_provider.dart';
 
 import './screens/home_screen.dart';
 import './screens/select_contact_screen.dart';
+import './screens/chat_screen.dart';
 
 void main() => runApp(ChatApp());
 
@@ -35,6 +37,7 @@ class ChatApp extends StatelessWidget {
         initialRoute: HomeScreen.routeName,
         routes: {
           SelectContactScreen.routeName: (ctx) => SelectContactScreen(),
+          ChatScreen.routeName: (ctx) => ChatScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) => HomeScreen());

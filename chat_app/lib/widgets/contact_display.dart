@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:contacts_service/contacts_service.dart';
 
+import '../screens/chat_screen.dart';
+import '../helpers/common.dart';
+
 class ContactDisplay extends StatelessWidget {
   final Contact contact;
 
@@ -9,17 +12,22 @@ class ContactDisplay extends StatelessWidget {
     @required this.contact,
   });
 
+  void openChatScreen(BuildContext context) {
+    Contact localContact = contact;
+    Navigator.of(context)
+        .popAndPushNamed(ChatScreen.routeName, arguments: localContact);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(0),
       child: ListTile(
-        leading: (contact.avatar != null && contact.avatar.isNotEmpty)
-            ? CircleAvatar(backgroundImage: MemoryImage(contact.avatar))
-            : CircleAvatar(child: Text(contact.initials())),
-        title: Text(contact.displayName ?? ''), // We Should Display Status here , at WhatsApp Show the Status
+        leading: getCircularAvatar(contact.avatar),
+        title: Text(contact.displayName ??
+            ''), // We Should Display Status here , at WhatsApp Show the Status
         subtitle: Text(contact.phones.first.value.toString()),
-        onTap: () {}, // Show Chat Screen
+        onTap: () => openChatScreen(context), // Show Chat Screen
       ),
     );
   }
