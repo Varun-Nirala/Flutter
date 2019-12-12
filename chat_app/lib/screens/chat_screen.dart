@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 
 import '../helpers/common.dart';
+import '../widgets/chat_widget.dart';
 
 class ChatScreen extends StatelessWidget {
   static const routeName = '/chat-screen';
@@ -24,7 +25,23 @@ class ChatScreen extends StatelessWidget {
     final Contact _contact = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_contact.givenName.toString()),
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            IconButton(
+              alignment: Alignment.centerLeft,
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            getCircularAvatar(_contact.avatar),
+            SizedBox(width: 4,),
+            Text(_contact.givenName),
+          ],
+        ),
         actions: <Widget>[
           getVideoIconButton(_onVideoButton),
           getCallIconButton(_onCallButton),
@@ -32,29 +49,7 @@ class ChatScreen extends StatelessWidget {
         ],
         elevation: 0,
       ),
-      body: Center(
-        child: Text(_contact.phones.first.value.toString()),
-      ),
-    );
-  }
-}
-
-class LeadingWidget extends StatelessWidget {
-  final Contact _contact;
-
-  const LeadingWidget(this._contact);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.arrow_back),
-          padding: EdgeInsets.all(0),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        getCircularAvatar(_contact.avatar),
-      ],
+      body: ChatWidget(chatId: _contact.phones.first.value),// Show Chat Area
     );
   }
 }

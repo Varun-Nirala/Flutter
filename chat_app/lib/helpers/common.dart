@@ -27,7 +27,7 @@ IconButton getMoreIconButton(Function onpress) {
 
 IconButton getVideoIconButton(Function onpress) {
   return IconButton(
-    icon: const Icon(Icons.video_call),
+    icon: const Icon(Icons.videocam),
     onPressed: onpress,
     padding: const EdgeInsets.all(0),
   );

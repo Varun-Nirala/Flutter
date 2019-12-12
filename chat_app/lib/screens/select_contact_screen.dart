@@ -18,7 +18,7 @@ class SelectContactScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contactList = Provider.of<ContactsProvider>(context).contactList;
+    final contactList = Provider.of<ContactsProvider>(context, listen: false).contactList;
     return Scaffold(
       appBar: AppBar(
         title: Column(
