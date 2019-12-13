@@ -7,8 +7,8 @@ import '../helpers/common.dart';
 
 class ChatWidget extends StatelessWidget {
   final String chatId; // @TODO: Instead of contact we should have a unique id
-
-  const ChatWidget({@required this.chatId});
+  
+  ChatWidget({@required this.chatId});
 
   void onMicPress() {}
 
@@ -21,7 +21,7 @@ class ChatWidget extends StatelessWidget {
           Flexible(
             child: Container(
               width: double.infinity,
-              color: Colors.red,
+              color: Colors.grey[300],
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -31,47 +31,55 @@ class ChatWidget extends StatelessWidget {
             ),
           ),
           Divider(height: 1),
-          _textComposer(),
+          _textComposer(context),
+          Divider(height: 5),
         ],
       ),
     );
   }
 
-  Row _textComposer() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
+  Widget _textComposer(BuildContext context) {
+    final totalHeight = 45.0;
+    final fontSize = 18.0;
+    return SizedBox(
+      height: totalHeight,
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width: 35,
+            child: IconButton(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              icon: const Icon(Icons.insert_emoticon),
+              onPressed: () {},
+            ),
+          ),
+          Expanded(
             child: TextFormField(
+              style: TextStyle(fontSize: fontSize),
               decoration: InputDecoration(
+                border: InputBorder.none,
                 hasFloatingPlaceholder: false,
                 labelText: 'Type a message',
-                border: OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(50.0),
-                  ),
-                ),
-                prefixIcon: IconButton(
-                  icon: const Icon(Icons.insert_emoticon),
-                  onPressed: () {},
-                ),
-                suffixIcon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    IconButton(
-                        icon: const Icon(Icons.attach_file), onPressed: () {}),
-                    IconButton(
-                        icon: const Icon(Icons.camera_alt), onPressed: () {}),
-                  ],
-                ),
               ),
             ),
           ),
-        ),
-        getCircularButton(Icon(Icons.mic), onMicPress),
-      ],
+          SizedBox(
+            width: 30,
+            child: IconButton(
+              icon: const Icon(Icons.attach_file),
+              onPressed: () {},
+            ),
+          ),
+          SizedBox(
+            width: 40,
+            child: IconButton(
+              icon: const Icon(Icons.camera_alt),
+              onPressed: () {},
+            ),
+          ),
+          getCircularButton(Icon(Icons.mic), onMicPress),
+        ],
+      ),
     );
   }
 }
