@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/common.dart';
-import '../models/chat.dart';
+import '../models/message.dart';
 import '../provider/chat_provider.dart';
-
 
 class ChatWidget extends StatelessWidget {
   final String chatId; // @TODO: Instead of contact we should have a unique id
@@ -26,7 +25,6 @@ class ChatWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Chat chat = Provider.of<ChatProvider>(context).getChat(chatId);
     return Container(
       child: Column(
         children: <Widget>[
@@ -34,21 +32,47 @@ class ChatWidget extends StatelessWidget {
             child: Container(
               width: double.infinity,
               color: Colors.grey[300],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  chat.messages.isEmpty ? Text('No Messages') :
-                  Text('${chat.messages.last.text}'),
-                ],
+              child: Consumer<ChatProvider>(
+                builder: (ctx, chat, _) {
+                  return ListView.builder(
+                    itemCount: chat.getAllMessages(chatId).length,
+                    itemBuilder: (ctx, i) {
+                      return _displayTextMessage(
+                          context, chat.getAllMessages(chatId)[i]);
+                    },
+                  );
+                },
               ),
             ),
           ),
-          Divider(height: 1),
+          Divider(height: 2),
           _textComposer(context),
-          Divider(height: 5),
+          Divider(
+            height: 5,
+            color: Colors.grey[300],
+            thickness: 5,
+          ),
         ],
       ),
     );
+  }
+
+  Widget _displayTextMessage(BuildContext context, Message msg) {
+    if (msg.ownerId == chatId) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Card(
+            elevation: 2,
+            child: ListTile(
+              trailing: Text(msg.text),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Text(msg.text);
+    }
   }
 
   Widget _textComposer(BuildContext context) {
@@ -58,42 +82,37 @@ class ChatWidget extends StatelessWidget {
       height: totalHeight,
       child: Row(
         children: <Widget>[
-          SizedBox(
-            width: 35,
-            child: IconButton(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              icon: const Icon(Icons.insert_emoticon),
-              onPressed: () {},
-            ),
-          ),
+          getSizedIconButton(Icons.insert_emoticon, () {}),
           Expanded(
-            child: TextField(
-              controller: _msgController,
-              onSubmitted: (_) => _onSubmit(context),
-              style: TextStyle(fontSize: fontSize),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hasFloatingPlaceholder: false,
-                labelText: 'Type a message',
+            child: Padding(
+              padding: const EdgeInsets.only(left: 5, right: 0),
+              child: TextField(
+                controller: _msgController,
+                onSubmitted: (_) => _onSubmit(context),
+                style: TextStyle(fontSize: fontSize),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hasFloatingPlaceholder: false,
+                  labelText: 'Type a message',
+                ),
               ),
             ),
           ),
-          SizedBox(
-            width: 30,
-            child: IconButton(
-              icon: const Icon(Icons.attach_file),
-              onPressed: () {},
-            ),
-          ),
-          SizedBox(
-            width: 40,
-            child: IconButton(
-              icon: const Icon(Icons.camera_alt),
-              onPressed: () {},
-            ),
-          ),
-          getCircularButton(Icon(Icons.mic), onMicPress),
+          getSizedIconButton(Icons.attach_file, () {}),
+          getSizedIconButton(Icons.camera_alt, () {}),
+          getCircularButton(Icons.mic, onMicPress),
         ],
+      ),
+    );
+  }
+
+  Widget getSizedIconButton(IconData iconData, Function onPress,
+      [double width = 30]) {
+    return SizedBox(
+      width: width,
+      child: IconButton(
+        icon: Icon(iconData),
+        onPressed: onPress,
       ),
     );
   }

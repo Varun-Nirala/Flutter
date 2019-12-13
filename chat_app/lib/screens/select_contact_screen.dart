@@ -21,6 +21,7 @@ class SelectContactScreen extends StatelessWidget {
     final contactList = Provider.of<ContactsProvider>(context, listen: false).contactList;
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0.0,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,

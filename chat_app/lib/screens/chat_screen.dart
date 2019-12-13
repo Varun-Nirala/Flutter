@@ -25,20 +25,14 @@ class ChatScreen extends StatelessWidget {
     final Contact _contact = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        titleSpacing: 0.0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            IconButton(
-              alignment: Alignment.centerLeft,
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
             getCircularAvatar(_contact.avatar),
-            SizedBox(width: 4,),
+            SizedBox(
+              width: 10,
+            ),
             Text(_contact.givenName),
           ],
         ),
@@ -49,7 +43,7 @@ class ChatScreen extends StatelessWidget {
         ],
         elevation: 0,
       ),
-      body: ChatWidget(chatId: _contact.phones.first.value),// Show Chat Area
+      body: ChatWidget(chatId: _contact.phones.first.value), // Show Chat Area
     );
   }
 }

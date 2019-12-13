@@ -54,12 +54,12 @@ CircleAvatar getCircularAvatar(Uint8List avatar) {
         );
 }
 
-Widget getCircularButton(Icon showIcon, Function onpress) {
+Widget getCircularButton(IconData iconData, Function onpress) {
   return Padding(
-    padding: const EdgeInsets.all(5.0),
+    padding: const EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
     child: CircleAvatar(
       child: IconButton(
-        icon: showIcon,
+        icon: Icon(iconData),
         onPressed: onpress,
       ),
     ),
