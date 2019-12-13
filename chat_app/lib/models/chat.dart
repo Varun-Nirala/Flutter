@@ -13,6 +13,6 @@ class Chat {
   }
 
   void addMessage (Message msg) {
-    messages.add(msg);
+    _messages.add(msg);
   }
 }

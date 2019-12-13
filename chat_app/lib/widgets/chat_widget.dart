@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/chat_provider.dart';
-import '../models/chat.dart';
 import '../helpers/common.dart';
+import '../models/chat.dart';
+import '../provider/chat_provider.dart';
+
 
 class ChatWidget extends StatelessWidget {
   final String chatId; // @TODO: Instead of contact we should have a unique id
-  
+
+  final _msgController = TextEditingController();
+
   ChatWidget({@required this.chatId});
 
   void onMicPress() {}
+
+  void _onSubmit(BuildContext context) {
+    final String msgText = _msgController.text;
+
+    if (msgText.isNotEmpty) {
+      _msgController.clear();
+      Provider.of<ChatProvider>(context).addMessage(chatId, msgText);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +37,8 @@ class ChatWidget extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Text'),
+                  chat.messages.isEmpty ? Text('No Messages') :
+                  Text('${chat.messages.last.text}'),
                 ],
               ),
             ),
@@ -54,7 +67,9 @@ class ChatWidget extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: TextFormField(
+            child: TextField(
+              controller: _msgController,
+              onSubmitted: (_) => _onSubmit(context),
               style: TextStyle(fontSize: fontSize),
               decoration: InputDecoration(
                 border: InputBorder.none,

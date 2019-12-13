@@ -16,8 +16,8 @@ class ChatProvider extends ChangeNotifier {
         orElse: () => _addNewChat(chatId));
   }
 
-  void addMessage(String chatId, Message msg) {
-    getChat(chatId).addMessage(msg);
+  void addMessage(String chatId, String text) {
+    getChat(chatId).addMessage(createMessage(chatId, text));
     notifyListeners();
   }
 
