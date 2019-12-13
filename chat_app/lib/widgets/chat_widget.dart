@@ -31,13 +31,13 @@ class ChatWidget extends StatelessWidget {
             ),
           ),
           Divider(height: 1),
-          textComposer(),
+          _textComposer(),
         ],
       ),
     );
   }
 
-  Row textComposer() {
+  Row _textComposer() {
     return Row(
       children: <Widget>[
         Expanded(
@@ -45,6 +45,7 @@ class ChatWidget extends StatelessWidget {
             padding: const EdgeInsets.all(5.0),
             child: TextFormField(
               decoration: InputDecoration(
+                hasFloatingPlaceholder: false,
                 labelText: 'Type a message',
                 border: OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
@@ -56,6 +57,7 @@ class ChatWidget extends StatelessWidget {
                   onPressed: () {},
                 ),
                 suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     IconButton(
