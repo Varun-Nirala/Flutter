@@ -53,3 +53,15 @@ CircleAvatar getCircularAvatar(Uint8List avatar) {
           backgroundColor: Colors.grey[350],
         );
 }
+
+Widget getCircularButton(Icon showIcon, Function onpress) {
+  return Padding(
+    padding: const EdgeInsets.all(5.0),
+    child: CircleAvatar(
+      child: IconButton(
+        icon: showIcon,
+        onPressed: onpress,
+      ),
+    ),
+  );
+}

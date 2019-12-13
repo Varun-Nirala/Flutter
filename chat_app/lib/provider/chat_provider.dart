@@ -8,7 +8,6 @@ class ChatProvider extends ChangeNotifier {
 
   Chat _addNewChat(String chatId) {
     _chats.add(Chat(id: chatId));
-    notifyListeners();
     return _chats.firstWhere((chat) => chat.id == chatId);
   }
 
