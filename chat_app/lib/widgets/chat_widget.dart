@@ -34,11 +34,12 @@ class ChatWidget extends StatelessWidget {
               color: Colors.grey[300],
               child: Consumer<ChatProvider>(
                 builder: (ctx, chat, _) {
+                  final gapSize = MediaQuery.of(context).size.width * 0.40;
+                  List<Message> msgList = chat.getAllMessages(chatId);
                   return ListView.builder(
-                    itemCount: chat.getAllMessages(chatId).length,
+                    itemCount: msgList.length,
                     itemBuilder: (ctx, i) {
-                      return _displayTextMessage(
-                          context, chat.getAllMessages(chatId)[i]);
+                      return _displayTextMessage(context, gapSize, msgList[i]);
                     },
                   );
                 },
@@ -57,22 +58,36 @@ class ChatWidget extends StatelessWidget {
     );
   }
 
-  Widget _displayTextMessage(BuildContext context, Message msg) {
-    if (msg.ownerId == chatId) {
-      return Column(
+  Widget _displayTextMessage(
+      BuildContext context, double gapSize, Message msg) {
+    EdgeInsets value =
+        EdgeInsets.only(left: gapSize, top: 5, bottom: 5, right: 5);
+    TextAlign alignTo = TextAlign.right;
+
+    if (msg.ownerId != chatId) {
+      value = EdgeInsets.only(left: 5, top: 5, bottom: 5, right: gapSize);
+      alignTo = TextAlign.left;
+    }
+
+    return Card(
+      elevation: 2,
+      margin: value,
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Card(
-            elevation: 2,
-            child: ListTile(
-              trailing: Text(msg.text),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                msg.text,
+                textAlign: alignTo,
+                style: TextStyle(fontSize: 15),
+              ),
             ),
           ),
         ],
-      );
-    } else {
-      return Text(msg.text);
-    }
+      ),
+    );
   }
 
   Widget _textComposer(BuildContext context) {
