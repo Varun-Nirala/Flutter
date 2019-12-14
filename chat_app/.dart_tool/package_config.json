@@ -38,12 +38,6 @@
       "languageVersion": "2.0"
     },
     {
-      "name": "contacts_service",
-      "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/contacts_service-0.3.10",
-      "packageUri": "lib/",
-      "languageVersion": "2.0"
-    },
-    {
       "name": "convert",
       "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/convert-2.1.1",
       "packageUri": "lib/",
@@ -62,12 +56,6 @@
       "languageVersion": "2.0"
     },
     {
-      "name": "firebase_messaging",
-      "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-6.0.9",
-      "packageUri": "lib/",
-      "languageVersion": "2.0"
-    },
-    {
       "name": "flutter",
       "rootUri": "file:///C:/Program%20Files/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -82,12 +70,6 @@
     {
       "name": "image",
       "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/image-2.1.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.0"
-    },
-    {
-      "name": "intl",
-      "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.16.0",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -116,28 +98,10 @@
       "languageVersion": "2.1"
     },
     {
-      "name": "permission_handler",
-      "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-4.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.1"
-    },
-    {
       "name": "petitparser",
       "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-2.4.0",
       "packageUri": "lib/",
       "languageVersion": "2.4"
-    },
-    {
-      "name": "platform",
-      "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/platform-2.2.1",
-      "packageUri": "lib/",
-      "languageVersion": "1.24"
-    },
-    {
-      "name": "provider",
-      "rootUri": "file:///C:/Program%20Files/flutter/.pub-cache/hosted/pub.dartlang.org/provider-3.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.0"
     },
     {
       "name": "quiver",
@@ -212,7 +176,7 @@
       "languageVersion": "2.1"
     }
   ],
-  "generated": "2019-12-14T14:21:49.651885Z",
+  "generated": "2019-12-14T14:37:09.199910Z",
   "generator": "pub",
   "generatorVersion": "2.7.0"
 }
