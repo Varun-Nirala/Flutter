@@ -9,6 +9,18 @@ import './screens/home_screen.dart';
 import './screens/select_contact_screen.dart';
 import './screens/chat_screen.dart';
 
+/*
+cmd:    keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore
+          MD5:  C8:47:A3:22:18:8F:35:6C:A0:31:3D:81:F7:9B:B4:5C
+          SHA1: 88:33:01:7C:83:5C:10:17:FA:DC:D2:8E:33:CA:0C:25:93:CF:FE:3B
+          SHA256: 36:01:F1:58:68:D6:3D:02:1B:89:47:86:71:B2:9A:E7:2F:1B:A4:83:51:06:15:1F:84:0B:B1:8F:41:FB:50:74
+          Signature algorithm name: SHA1withRSA
+          Version: 1
+
+@TODO Have to create the release one
+cmd:    keytool -exportcert -list -v -alias <your-key-name> -keystore <path-to-production-keystore>
+*/
+
 void main() => runApp(ChatApp());
 
 class ChatApp extends StatelessWidget {
