@@ -8,7 +8,7 @@ import './provider/chat_provider.dart';
 import './screens/home_screen.dart';
 import './screens/select_contact_screen.dart';
 import './screens/chat_screen.dart';
-
+import './screens/login_screen.dart';
 /*
 cmd:    keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore
           MD5:  C8:47:A3:22:18:8F:35:6C:A0:31:3D:81:F7:9B:B4:5C
@@ -48,11 +48,12 @@ class ChatApp extends StatelessWidget {
             color: Colors.teal[800],
           ),
         ),
-        home: HomeScreen(),
+        home: LoginScreen(),//HomeScreen(),
         initialRoute: HomeScreen.routeName,
         routes: {
           SelectContactScreen.routeName: (ctx) => SelectContactScreen(),
           ChatScreen.routeName: (ctx) => ChatScreen(),
+          LoginScreen.routeName: (ctx) => LoginScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) => HomeScreen());
