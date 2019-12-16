@@ -68,11 +68,25 @@ Widget getCircularButton(IconData iconData, Function onpress) {
   );
 }
 
+Future<bool> getPermissions(List<PermissionGroup> permList) async {
+  Map<PermissionGroup, PermissionStatus> permissionStatus =
+      await PermissionHandler().requestPermissions(permList);
+
+  bool ret = true;
+
+  permissionStatus.forEach((key, val) {
+    if (val != PermissionStatus.granted) {
+      ret = false;
+    }
+  });
+
+  return ret;
+}
+
 Future<PermissionStatus> getContactPermission() async {
   PermissionStatus permission =
       await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
-  if (permission != PermissionStatus.granted &&
-      permission != PermissionStatus.disabled) {
+  if (permission != PermissionStatus.granted) {
     Map<PermissionGroup, PermissionStatus> permissionStatus =
         await PermissionHandler()
             .requestPermissions([PermissionGroup.contacts]);
