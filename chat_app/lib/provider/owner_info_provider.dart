@@ -1,19 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/owner_info.dart';
 
 class OwnerInfoProvider extends ChangeNotifier {
+  bool authenticated = false;
   OwnerInfo _ownerInfo;
 
-  OwnerInfo setUserInfo(String number, String countryCode) {
-    _ownerInfo = OwnerInfo(userNumber: number, userCountryCode: countryCode);
+  String numberKey = 'phoneNumberKey';
+  String countryCodeKey = 'countryCodeKey';
+  String idKey = 'VerificationIdKey';
+  String smsCodeKey = 'smsCodeKey';
+
+  bool get isAuthenticated {
+    return authenticated;
+  }
+
+  Future<void> setUserInfo(String number, String countryCode, String verificationId,
+      String smsCode, bool val) async {
+    _ownerInfo = OwnerInfo(
+      userNumber: number,
+      userCountryCode: countryCode,
+      verificationId: verificationId,
+      smsCode: smsCode,
+    );
+
+    authenticated = true;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(numberKey, number);
+    await prefs.setString(countryCodeKey, countryCode);
+    await prefs.setString(idKey, verificationId);
+    await prefs.setString(smsCodeKey, smsCode);
     notifyListeners();
-    return ownerInfo;
+  }
+
+  Future<OwnerInfo> fetchAndSetOwner() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String number = prefs.getString(numberKey);
+    String countryCode = prefs.getString(countryCodeKey);
+    String verificationId = prefs.getString(idKey);
+    String smsCode = prefs.getString(smsCodeKey);
+
+    _ownerInfo = OwnerInfo(
+      userNumber: number,
+      userCountryCode: countryCode,
+      verificationId: verificationId,
+      smsCode: smsCode,
+    );
+    notifyListeners();
+    return _ownerInfo;
   }
 
   OwnerInfo get ownerInfo {
-    return OwnerInfo(
-        userNumber: _ownerInfo.userNumber,
-        userCountryCode: _ownerInfo.countryCode);
+    return _ownerInfo;
   }
 }
