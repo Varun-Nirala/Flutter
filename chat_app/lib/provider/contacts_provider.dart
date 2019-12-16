@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../helpers/common.dart' as common;
 
 class ContactsProvider extends ChangeNotifier {
   List<Contact> _contactList = [];
@@ -14,47 +15,18 @@ class ContactsProvider extends ChangeNotifier {
     return _contactList.firstWhere((contact) => contact.displayName == name);
   }
 
-  Future<PermissionStatus> _getContactPermission() async {
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.contacts);
-    if (permission != PermissionStatus.granted &&
-        permission != PermissionStatus.disabled) {
-      Map<PermissionGroup, PermissionStatus> permissionStatus =
-          await PermissionHandler()
-              .requestPermissions([PermissionGroup.contacts]);
-      return permissionStatus[PermissionGroup.contacts] ??
-          PermissionStatus.unknown;
-    } else {
-      return permission;
-    }
-  }
-
   Future<void> fetchAndSetContacts() async {
     try {
-      PermissionStatus permissionStatus = await _getContactPermission();
+      PermissionStatus permissionStatus = await common.getContactPermission();
       if (permissionStatus == PermissionStatus.granted) {
         Iterable<Contact> contacts = await ContactsService.getContacts();
         _contactList = contacts.toList();
         notifyListeners();
       } else {
-        _handleInvalidPermissions(permissionStatus);
+        common.handleInvalidPermissions(permissionStatus);
       }
     } catch (error) {
       throw error;
-    }
-  }
-
-  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
-    if (permissionStatus == PermissionStatus.denied) {
-      throw new PlatformException(
-          code: "PERMISSION_DENIED",
-          message: "Access to location data denied",
-          details: null);
-    } else if (permissionStatus == PermissionStatus.disabled) {
-      throw new PlatformException(
-          code: "PERMISSION_DISABLED",
-          message: "Location data is not available on device",
-          details: null);
     }
   }
 }
