@@ -4,8 +4,11 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 import '../helpers/common.dart';
+import '../provider/owner_info_provider.dart';
+import '../models/owner_info.dart';
 
 class VerifyNumberScreen extends StatefulWidget {
   static const routeName = "/verify-number-screen";
@@ -17,10 +20,10 @@ class VerifyNumberScreen extends StatefulWidget {
 class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Country _country = Country.IN;
-  String _phoneNumber = "";
   String _verificationId = "";
   String _status = "";
   bool askPermission = true;
+  bool manuallyEnterSMSCode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -127,38 +130,40 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         ),
         const Divider(
           height: 15,
-          thickness: 2,
         ),
         Container(
           alignment: Alignment.center,
           height: 35,
-          width: MediaQuery.of(context).size.width - 100,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(
-                width: 50,
+              Flexible(
+                flex: 5,
                 child: Text(
                   '+${_country.dialingCode}',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 ),
               ),
-              const SizedBox(
-                width: 50,
-              ),
-              Expanded(
-                child: TextField(
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-                  onSubmitted: (String val) {
-                    setState(() {
-                      _phoneNumber = val;
-                      _verifyPhoneNumber(_phoneNumber);
-                    });
-                  },
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hasFloatingPlaceholder: false,
-                    labelText: 'Enter Number',
+              Flexible(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 25),
+                  child: TextField(
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    onSubmitted: (String val) {
+                      if (val.isNotEmpty) {
+                        OwnerInfo ownerInfo =
+                            Provider.of<OwnerInfoProvider>(context)
+                                .setUserInfo(val, _country.dialingCode);
+                        _verifyPhoneNumber(ownerInfo.phoneNumber);
+                      }
+                    },
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hasFloatingPlaceholder: false,
+                      labelText: 'Enter Number',
+                    ),
                   ),
                 ),
               ),
@@ -166,10 +171,49 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           ),
         ),
         const Divider(
-          height: 15,
-          thickness: 2,
+          height: 45,
         ),
+        manuallyEnterSMSCode
+            ? _getSMSCode(context)
+            : SizedBox(
+                height: 1,
+              ),
       ],
+    );
+  }
+
+  Widget _getSMSCode(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      height: 35,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Flexible(
+            flex: 6,
+            child: Text(
+              'SMS Code',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            ),
+          ),
+          SizedBox(width: 20,),
+          Flexible(
+            flex: 2,
+            child: TextField(
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              onSubmitted: (String val) {
+                if (val.isNotEmpty) {
+                  _signInWithPhoneNumber(val);
+                }
+              },
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hasFloatingPlaceholder: false,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -220,6 +264,11 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         (String verificationId) async {
       _verificationId = verificationId;
       // Ask user to manually input the OTP
+      setState(() {
+        _status =
+            'Auto Retrieval timeout, user have to manually enter the SMS code';
+        manuallyEnterSMSCode = true;
+      });
     };
 
     await _firebaseAuth.verifyPhoneNumber(

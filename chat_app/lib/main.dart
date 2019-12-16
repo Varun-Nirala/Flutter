@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './provider/curr_screen_provider.dart';
 import './provider/contacts_provider.dart';
 import './provider/chat_provider.dart';
+import './provider/owner_info_provider.dart';
 
 import './screens/home_screen.dart';
 import './screens/select_contact_screen.dart';
@@ -36,6 +37,9 @@ class ChatApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: ChatProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: OwnerInfoProvider(),
         ),
       ],
       child: MaterialApp(
