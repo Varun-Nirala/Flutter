@@ -6,7 +6,7 @@ import '../provider/contacts_provider.dart';
 import '../widgets/contact_display.dart';
 
 class SelectContactScreen extends StatelessWidget {
-  static const routeName = '/SelectContactScreen';
+  static const routeName = '/select-contact-screen';
 
   void _onSearchButton() {
     return;

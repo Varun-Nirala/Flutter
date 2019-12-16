@@ -53,7 +53,6 @@ class ChatApp extends StatelessWidget {
           ),
         ),
         home: VerifyNumberScreen(),
-        initialRoute: VerifyNumberScreen.routeName,
         routes: {
           HomeScreen.routeName: (ctx) => HomeScreen(),
           SelectContactScreen.routeName: (ctx) => SelectContactScreen(),
