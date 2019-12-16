@@ -15,7 +15,7 @@ import '../widgets/home_buttons.dart';
 import '../screens/select_contact_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  static const routeName = '/';
+  static const routeName = '/home-screen';
   static const appTitle = 'ChatApp';
 
   void _onSearchButton() {
@@ -30,6 +30,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(HomeScreen.appTitle),
         actions: <Widget>[
           getSearchIconButton(_onSearchButton),

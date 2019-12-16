@@ -52,12 +52,12 @@ class ChatApp extends StatelessWidget {
             color: Colors.teal[800],
           ),
         ),
-        home: VerifyNumberScreen(),//HomeScreen(),
-        initialRoute: HomeScreen.routeName,
+        home: VerifyNumberScreen(),
+        initialRoute: VerifyNumberScreen.routeName,
         routes: {
+          HomeScreen.routeName: (ctx) => HomeScreen(),
           SelectContactScreen.routeName: (ctx) => SelectContactScreen(),
           ChatScreen.routeName: (ctx) => ChatScreen(),
-          VerifyNumberScreen.routeName: (ctx) => VerifyNumberScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) => HomeScreen());

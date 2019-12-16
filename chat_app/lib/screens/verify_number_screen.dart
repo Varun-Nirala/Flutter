@@ -9,9 +9,10 @@ import 'package:provider/provider.dart';
 import '../helpers/common.dart';
 import '../provider/owner_info_provider.dart';
 import '../models/owner_info.dart';
+import '../screens/home_screen.dart';
 
 class VerifyNumberScreen extends StatefulWidget {
-  static const routeName = "/verify-number-screen";
+  static const routeName = "/";
 
   @override
   _VerifyNumberScreenState createState() => _VerifyNumberScreenState();
@@ -24,6 +25,10 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   String _status = "";
   bool askPermission = true;
   bool manuallyEnterSMSCode = false;
+
+  void successfullySignedIn(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +161,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                         OwnerInfo ownerInfo =
                             Provider.of<OwnerInfoProvider>(context)
                                 .setUserInfo(val, _country.dialingCode);
-                        _verifyPhoneNumber(ownerInfo.phoneNumber);
+                        _verifyPhoneNumber(context, ownerInfo.phoneNumber);
                       }
                     },
                     keyboardType: TextInputType.number,
@@ -196,14 +201,16 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
             ),
           ),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           Flexible(
             flex: 2,
             child: TextField(
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
               onSubmitted: (String val) {
                 if (val.isNotEmpty) {
-                  _signInWithPhoneNumber(val);
+                  _signInWithPhoneNumber(context, val);
                 }
               },
               keyboardType: TextInputType.number,
@@ -218,7 +225,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   }
 
   // Example code of how to sign in with phone.
-  void _signInWithPhoneNumber(String smsCode) async {
+  void _signInWithPhoneNumber(BuildContext context, String smsCode) async {
     final AuthCredential authCredential = PhoneAuthProvider.getCredential(
         verificationId: _verificationId, smsCode: smsCode);
 
@@ -231,6 +238,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     setState(() {
       if (result.user != null) {
         _status = 'Successfully signed in, uid: ' + result.user.uid;
+        successfullySignedIn(context);
       } else {
         _status = 'Sign in failed';
       }
@@ -238,12 +246,13 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   }
 
   // Verify the phone number
-  void _verifyPhoneNumber(String phoneNumber) async {
+  void _verifyPhoneNumber(BuildContext context, String phoneNumber) async {
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) async {
       _firebaseAuth.signInWithCredential(phoneAuthCredential);
       setState(() {
         _status = 'Received phone auth credential: $phoneAuthCredential';
+        successfullySignedIn(context);
       });
     };
 
