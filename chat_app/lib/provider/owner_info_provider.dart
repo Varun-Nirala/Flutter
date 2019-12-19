@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/owner_info.dart';
+import '../helpers/db_helper.dart' as db;
 
 class OwnerInfoProvider extends ChangeNotifier {
   bool authenticated = false;
@@ -24,6 +25,8 @@ class OwnerInfoProvider extends ChangeNotifier {
       verificationId: verificationId,
       smsCode: smsCode,
     );
+
+    await db.DBHelper.addUser(_ownerInfo);
 
     authenticated = true;
 

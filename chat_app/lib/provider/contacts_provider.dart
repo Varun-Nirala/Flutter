@@ -3,12 +3,18 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../helpers/common.dart' as common;
+import '../helpers/db_helper.dart' as db;
 
 class ContactsProvider extends ChangeNotifier {
   List<Contact> _contactList = [];
+  List<Contact> _registeredContactList = [];
 
   List<Contact> get contactList {
     return [..._contactList];
+  }
+
+  List<Contact> get registeredContactList {
+    return [..._registeredContactList];
   }
 
   Contact findByName(String name) {
@@ -21,6 +27,9 @@ class ContactsProvider extends ChangeNotifier {
       if (permissionStatus == PermissionStatus.granted) {
         Iterable<Contact> contacts = await ContactsService.getContacts();
         _contactList = contacts.toList();
+
+        _registeredContactList = await db.DBHelper.getAllRegistered(contactList);
+
         notifyListeners();
       } else {
         common.handleInvalidPermissions(permissionStatus);
