@@ -24,7 +24,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   String _phoneNumber = "";
   String _verificationId = "";
   String _status = "";
-  bool askPermission = true;
+  bool askPermission = false;
   bool manuallyEnterSMSCode = false;
   String _smsCode = "";
 
@@ -37,8 +37,10 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   Future<void> successfullySignedIn(BuildContext context) async {
     // Save Data to Device Storage
-    await Provider.of<OwnerInfoProvider>(context).setUserInfo(
-        _phoneNumber, _country.dialingCode, _verificationId, _smsCode, true);
+    if (!_isLoading) {
+      await Provider.of<OwnerInfoProvider>(context).setUserInfo(
+          _phoneNumber, _country.dialingCode, _verificationId, _smsCode, true);
+    }
     Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
   }
 
@@ -49,10 +51,17 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
       Provider.of<OwnerInfoProvider>(context)
           .fetchAndSetOwner()
           .then((ownerInfo) {
-        _verificationId = ownerInfo.verificationId;
-        _smsCode = ownerInfo.smsCode;
-        _signInWithPhoneNumber(context);
+        if (ownerInfo != null) {
+          _verificationId = ownerInfo.verificationId;
+          _smsCode = ownerInfo.smsCode;
+          _signInWithPhoneNumber(context);
+        } else {
+          _isLoading = false;
+          askPermission = true;
+        }
+      }).catchError((_) {
         _isLoading = false;
+        askPermission = true;
       });
     }
     _isInit = false;
@@ -189,7 +198,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                   child: TextField(
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                     onSubmitted: (String val) {
-                      if (val.isNotEmpty) {
+                      if (val.isNotEmpty && val.length >= 10) {
                         _phoneNumber = val;
                         _verifyPhoneNumber(context, getPhoneNo);
                       }
@@ -273,6 +282,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         successfullySignedIn(context);
       } else {
         _status = 'Sign in failed';
+        _isLoading = false;
       }
     });
   }

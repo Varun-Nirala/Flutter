@@ -46,6 +46,14 @@ class OwnerInfoProvider extends ChangeNotifier {
     String verificationId = prefs.getString(idKey);
     String smsCode = prefs.getString(smsCodeKey);
 
+    if (number == null ||
+        countryCode == null ||
+        verificationId == null ||
+        smsCode == null) {
+          notifyListeners();
+      return null;
+    }
+
     _ownerInfo = OwnerInfo(
       userNumber: number,
       userCountryCode: countryCode,
@@ -64,10 +72,9 @@ class OwnerInfoProvider extends ChangeNotifier {
     String otherNumber = othersContact.phones.first.value.replaceAll(' ', '');
     String chatId;
     // Chat id is smaller number _ bigger number
-    chatId =
-        (_ownerInfo.phoneNumber.compareTo(otherNumber) < 0)
-            ? _ownerInfo.phoneNumber + '_' + otherNumber
-            : otherNumber + '_' + _ownerInfo.phoneNumber;
+    chatId = (_ownerInfo.phoneNumber.compareTo(otherNumber) < 0)
+        ? _ownerInfo.phoneNumber + '_' + otherNumber
+        : otherNumber + '_' + _ownerInfo.phoneNumber;
 
     return chatId;
   }
