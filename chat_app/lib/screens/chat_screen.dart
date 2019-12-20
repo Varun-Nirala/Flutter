@@ -43,7 +43,7 @@ class ChatScreen extends StatelessWidget {
         ],
         elevation: 0,
       ),
-      body: ChatWidget(chatId: _contact.phones.first.value), // Show Chat Area
+      body: ChatWidget(othersContact: _contact), // Show Chat Area
     );
   }
 }

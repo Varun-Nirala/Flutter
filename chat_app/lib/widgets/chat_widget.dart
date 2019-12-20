@@ -1,16 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:contacts_service/contacts_service.dart';
+
+import '../models/owner_info.dart';
 import '../helpers/common.dart';
 import '../models/message.dart';
 import '../provider/chat_provider.dart';
+import '../provider/owner_info_provider.dart';
 
-class ChatWidget extends StatelessWidget {
-  final String chatId; // @TODO: Instead of contact we should have a unique id
+class ChatWidget extends StatefulWidget {
+  final Contact othersContact;
+
+  ChatWidget({@required this.othersContact});
+
+  @override
+  _ChatWidgetState createState() => _ChatWidgetState();
+}
+
+class _ChatWidgetState extends State<ChatWidget> {
+  String chatId;
+  OwnerInfo ownerInfo;
+  String ownerId;
+  bool _isInit = true;
 
   final _msgController = TextEditingController();
 
-  ChatWidget({@required this.chatId});
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      ownerInfo =
+          Provider.of<OwnerInfoProvider>(context, listen: false).ownerInfo;
+      ownerId = ownerInfo.phoneNumber.replaceAll(' ', '');
+      chatId = Provider.of<OwnerInfoProvider>(context, listen: false)
+          .createChatId(widget.othersContact);
+      _isInit = false;
+    }
+    super.didChangeDependencies();
+  }
 
   void onMicPress() {}
 
@@ -19,7 +46,7 @@ class ChatWidget extends StatelessWidget {
 
     if (msgText.isNotEmpty) {
       _msgController.clear();
-      Provider.of<ChatProvider>(context).addMessage(chatId, msgText);
+      Provider.of<ChatProvider>(context).addMessage(chatId, ownerId, msgText);
     }
   }
 

@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 import './message.dart';
 
 class Chat {
-  final String id;
+  final String chatId;
   final List<Message> _messages = [];
 
-  Chat({@required this.id});
+  Chat({@required this.chatId});
 
   List<Message> get messages {
     return [..._messages];

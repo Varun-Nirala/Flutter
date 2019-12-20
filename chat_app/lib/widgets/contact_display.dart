@@ -1,3 +1,4 @@
+import 'package:chat_app/models/owner_info.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contacts_service/contacts_service.dart';
@@ -13,9 +14,8 @@ class ContactDisplay extends StatelessWidget {
   });
 
   void openChatScreen(BuildContext context) {
-    Contact localContact = contact;
     Navigator.of(context)
-        .popAndPushNamed(ChatScreen.routeName, arguments: localContact);
+        .popAndPushNamed(ChatScreen.routeName, arguments: contact);
   }
 
   @override

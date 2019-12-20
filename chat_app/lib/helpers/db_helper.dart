@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:contacts_service/contacts_service.dart';
 
 import '../models/owner_info.dart';
+import '../models/message.dart';
 
 // Singleton Class
 class DBHelper {
@@ -9,6 +10,9 @@ class DBHelper {
   final _verificationKey = 'verificationId';
   final _smsCodeKey = 'smsCode';
   FirebaseDatabase _dbInstance;
+
+  final String _dbChildUser = 'Users';
+  final String _dbChildMessages = 'Messages';
 
   factory DBHelper() {
     return _instance;
@@ -20,7 +24,7 @@ class DBHelper {
 
   Future<bool> isUserRegistered(String id) async {
     DataSnapshot snapShot =
-        await _dbInstance.reference().child('Users').child(id).once();
+        await _dbInstance.reference().child(_dbChildUser).child(id).once();
 
     return snapShot.value != null;
   }
@@ -33,7 +37,11 @@ class DBHelper {
         _verificationKey: '${info.verificationId}',
         _smsCodeKey: '${info.smsCode}',
       };
-      _dbInstance.reference().child('Users').child(info.phoneNumber).set(data);
+      _dbInstance
+          .reference()
+          .child(_dbChildUser)
+          .child(info.phoneNumber)
+          .set(data);
     }
   }
 
@@ -48,5 +56,13 @@ class DBHelper {
       }
     }
     return retContacts;
+  }
+
+  Future<void> addMessage(String chatId, Message msg) async {
+    await _dbInstance
+        .reference()
+        .child(_dbChildMessages)
+        .child(chatId)
+        .set(msg.text);
   }
 }
