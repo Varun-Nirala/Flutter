@@ -28,6 +28,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String _ownerNumber = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -46,7 +47,7 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.chat),
         onPressed: () async {
-          await Provider.of<ContactsProvider>(context, listen: false).fetchAndSetContacts();
+          await Provider.of<ContactsProvider>(context, listen: false).fetchAndSetContacts(_ownerNumber);
           Navigator.of(context).pushNamed(SelectContactScreen.routeName);
         },
         backgroundColor: Colors.greenAccent[700],

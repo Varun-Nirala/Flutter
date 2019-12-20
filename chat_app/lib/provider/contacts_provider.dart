@@ -21,7 +21,7 @@ class ContactsProvider extends ChangeNotifier {
     return _contactList.firstWhere((contact) => contact.displayName == name);
   }
 
-  Future<void> fetchAndSetContacts() async {
+  Future<void> fetchAndSetContacts(String ownerNumber) async {
     try {
       PermissionStatus permissionStatus = await common.getContactPermission();
       if (permissionStatus == PermissionStatus.granted) {
@@ -29,6 +29,11 @@ class ContactsProvider extends ChangeNotifier {
         _contactList = contacts.toList();
 
         _registeredContactList = await db.DBHelper().getAllRegisteredUser(contactList);
+
+        _registeredContactList.removeWhere( (Contact c) {
+          String number = c.phones.first.value.replaceAll(' ', '');
+          return number == ownerNumber;
+        });
 
         notifyListeners();
       } else {

@@ -41,7 +41,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
       await Provider.of<OwnerInfoProvider>(context).setUserInfo(
           _phoneNumber, _country.dialingCode, _verificationId, _smsCode, true);
     }
-    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+    String ownerNumber = '+' + _country.dialingCode + _phoneNumber;
+    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName, arguments: ownerNumber);
   }
 
   @override

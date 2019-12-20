@@ -19,7 +19,17 @@ class DBHelper {
   }
 
   DBHelper._init() {
+    FirebaseDatabase().setPersistenceEnabled(true);
+    FirebaseDatabase().setPersistenceCacheSizeBytes(10000000);
     _dbInstance = FirebaseDatabase.instance;
+  }
+
+  DatabaseReference getUserReference() {
+    return _dbInstance.reference().child(_dbChildUser);
+  }
+
+  DatabaseReference getMessagesReference(String chatId) {
+    return _dbInstance.reference().child(_dbChildMessages).child(chatId);
   }
 
   Future<bool> isUserRegistered(String id) async {
@@ -62,7 +72,7 @@ class DBHelper {
     await _dbInstance
         .reference()
         .child(_dbChildMessages)
-        .child(chatId)
-        .set(msg.text);
+        .child(chatId).push()
+        .set(msg.toMap());
   }
 }

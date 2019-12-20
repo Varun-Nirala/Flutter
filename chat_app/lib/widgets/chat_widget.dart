@@ -91,7 +91,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         EdgeInsets.only(left: gapSize, top: 5, bottom: 5, right: 5);
     TextAlign alignTo = TextAlign.right;
 
-    if (msg.ownerId != chatId) {
+    if (msg.ownerId != ownerId) {
       value = EdgeInsets.only(left: 5, top: 5, bottom: 5, right: gapSize);
       alignTo = TextAlign.left;
     }
@@ -100,7 +100,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       elevation: 2,
       margin: value,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: (msg.ownerId != ownerId) ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: <Widget>[
           Flexible(
             child: Padding(
