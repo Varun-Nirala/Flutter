@@ -28,7 +28,7 @@ class ContactsProvider extends ChangeNotifier {
         Iterable<Contact> contacts = await ContactsService.getContacts();
         _contactList = contacts.toList();
 
-        _registeredContactList = await db.DBHelper.getAllRegistered(contactList);
+        _registeredContactList = await db.DBHelper().getAllRegisteredUser(contactList);
 
         notifyListeners();
       } else {

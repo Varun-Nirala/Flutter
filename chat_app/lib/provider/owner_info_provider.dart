@@ -26,7 +26,7 @@ class OwnerInfoProvider extends ChangeNotifier {
       smsCode: smsCode,
     );
 
-    await db.DBHelper.addUser(_ownerInfo);
+    await db.DBHelper().addUser(_ownerInfo);
 
     authenticated = true;
 

@@ -1,44 +1,48 @@
-import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:contacts_service/contacts_service.dart';
 
 import '../models/owner_info.dart';
 
+// Singleton Class
 class DBHelper {
-  static const verificationKey = 'verificationId';
-  static const smsCodeKey = 'smsCode';
+  static final DBHelper _instance = DBHelper._init();
+  final _verificationKey = 'verificationId';
+  final _smsCodeKey = 'smsCode';
+  FirebaseDatabase _dbInstance;
 
-  static Future<bool> isRegistered(String id) async {
-    DataSnapshot snapShot = await FirebaseDatabase.instance
-        .reference()
-        .child('Users')
-        .child(id)
-        .once();
+  factory DBHelper() {
+    return _instance;
+  }
+
+  DBHelper._init() {
+    _dbInstance = FirebaseDatabase.instance;
+  }
+
+  Future<bool> isUserRegistered(String id) async {
+    DataSnapshot snapShot =
+        await _dbInstance.reference().child('Users').child(id).once();
 
     return snapShot.value != null;
   }
 
-  static Future<void> addUser(OwnerInfo info) async {
-    bool bRet = await isRegistered(info.phoneNumber);
+  Future<void> addUser(OwnerInfo info) async {
+    bool bRet = await isUserRegistered(info.phoneNumber);
 
     if (!bRet) {
       Map<String, String> data = {
-        verificationKey: '${info.verificationId}',
-        smsCodeKey: '${info.smsCode}',
+        _verificationKey: '${info.verificationId}',
+        _smsCodeKey: '${info.smsCode}',
       };
-
-      FirebaseDatabase.instance.reference().child('Users').child(info.phoneNumber).set(data);
+      _dbInstance.reference().child('Users').child(info.phoneNumber).set(data);
     }
   }
 
-  static Future<List<Contact>> getAllRegistered(
-      List<Contact> inContacts) async {
+  Future<List<Contact>> getAllRegisteredUser(List<Contact> inContacts) async {
     List<Contact> retContacts = [];
 
     for (Contact contact in inContacts) {
       String phoneNumber = contact.phones.first.value;
-      bool bRet = await isRegistered(phoneNumber.replaceAll(' ', ''));
+      bool bRet = await isUserRegistered(phoneNumber.replaceAll(' ', ''));
       if (bRet) {
         retContacts.add(contact);
       }
