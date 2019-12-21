@@ -19,7 +19,7 @@ cmd:    keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android
           Version: 1
 
 @TODO Have to create the release one
-cmd:    keytool -exportcert -list -v -alias <your-key-name> -keystore <path-to-production-keystore>
+cmd:    keytool -genkey -v -keystore c:/Users/CODENAME/key.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias key
 */
 
 void main() => runApp(ChatApp());
