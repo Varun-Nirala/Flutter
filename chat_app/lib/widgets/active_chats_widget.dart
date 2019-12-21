@@ -57,12 +57,7 @@ class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {
         subtitle: Text(chatInfo.lastText),
         onTap: () =>
             openChatScreen(context, chatInfo.contact), // Show Chat Screen
-        trailing: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(getFormattedTime(chatInfo.lastUpdated)),
-          ],
-        ),
+        trailing: Text(getFormattedTime(chatInfo.lastUpdated)),
       ),
     );
   }

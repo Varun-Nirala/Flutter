@@ -114,12 +114,24 @@ class _ChatWidgetState extends State<ChatWidget> {
             : MainAxisAlignment.end,
         children: <Widget>[
           Flexible(
+            flex: 2,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 msg.text,
                 textAlign: alignTo,
                 style: TextStyle(fontSize: 15),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8, right: 5, top: 10),
+              child: Text(
+                getFormattedTime(msg.dateTime.toIso8601String()),
+                style: TextStyle(fontSize: 10),
+                textAlign: TextAlign.start,
               ),
             ),
           ),
