@@ -29,8 +29,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   bool manuallyEnterSMSCode = false;
   String _smsCode = "";
 
-  var _isInit = true;
-  var _isLoading = false;
+  var _bIsInit = true;
+  var _bIsLoading = false;
 
   String get getPhoneNo {
     return '+' + _country.dialingCode + _phoneNumber;
@@ -38,19 +38,20 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   Future<void> successfullySignedIn(BuildContext context) async {
     // Save Data to Device Storage
-    if (!_isLoading) {
+    if (!_bIsLoading) {
       await Provider.of<OwnerInfoProvider>(context).setUserInfo(
           _phoneNumber, _country.dialingCode, _verificationId, _smsCode, true);
     }
     String ownerNumber = '+' + _country.dialingCode + _phoneNumber;
     await Contacts().fetchAndSetContacts(ownerNumber);
-    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName, arguments: ownerNumber);
+    Navigator.of(context)
+        .pushReplacementNamed(HomeScreen.routeName, arguments: ownerNumber);
   }
 
   @override
   void didChangeDependencies() {
-    if (_isInit) {
-      _isLoading = true;
+    if (_bIsInit) {
+      _bIsLoading = true;
       Provider.of<OwnerInfoProvider>(context)
           .fetchAndSetOwner()
           .then((ownerInfo) {
@@ -59,15 +60,15 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           _smsCode = ownerInfo.smsCode;
           _signInWithPhoneNumber(context);
         } else {
-          _isLoading = false;
+          _bIsLoading = false;
           askPermission = true;
         }
       }).catchError((_) {
-        _isLoading = false;
+        _bIsLoading = false;
         askPermission = true;
       });
     }
-    _isInit = false;
+    _bIsInit = false;
     super.didChangeDependencies();
   }
 
@@ -83,7 +84,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: _isLoading
+      body: _bIsLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -285,13 +286,24 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         successfullySignedIn(context);
       } else {
         _status = 'Sign in failed';
-        _isLoading = false;
+        _bIsLoading = false;
       }
     });
   }
 
   // Verify the phone number
   void _verifyPhoneNumber(BuildContext context, String phoneNumber) async {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 5),
+      content: Text('Waiting for SMS Code'),
+      action: SnackBarAction(
+        label: 'Exit',
+        onPressed: () {
+          exit(0);
+        },
+      ),
+    ));
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
       await _firebaseAuth.signInWithCredential(authCredential);
@@ -317,6 +329,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) async {
+      Scaffold.of(context).removeCurrentSnackBar();
       _verificationId = verificationId;
       // Ask user to manually input the OTP
       setState(() {
