@@ -32,6 +32,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   var _bIsInit = true;
   var _bIsLoading = false;
 
+  var _bVerifyingNumber = false;
+
   String get getPhoneNo {
     return '+' + _country.dialingCode + _phoneNumber;
   }
@@ -146,88 +148,96 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   }
 
   Widget verifyPhoneNumberBody(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        const Divider(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-          child: Text(
-            'ChatApp will send an SMS message (other charges may apply) to verify your phone number. Enter your country code and phone number.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-          ),
-        ),
-        const Divider(
-          height: 15,
-        ),
-        CountryPicker(
-          selectedCountry: _country,
-          dense: false,
-          showFlag: true, //displays flag, true by default
-          showDialingCode: false, //displays dialing code, false by default
-          showName: true, //displays country name, true by default
-          showCurrency: false, //eg. 'British pound'
-          showCurrencyISO: false, //eg. 'GBP'
-          onChanged: (Country country) {
-            setState(() {
-              _country = country;
-            });
-          },
-        ),
-        const Divider(
-          height: 15,
-        ),
-        Container(
-          alignment: Alignment.center,
-          height: 35,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+    return _bVerifyingNumber
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Flexible(
-                flex: 5,
+              const Divider(
+                height: 10,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                 child: Text(
-                  '+${_country.dialingCode}',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                  'ChatApp will send an SMS message (other charges may apply) to verify your phone number. Enter your country code and phone number.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
               ),
-              Flexible(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25),
-                  child: TextField(
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-                    onSubmitted: (String val) {
-                      if (val.isNotEmpty && val.length >= 10) {
-                        _phoneNumber = val;
-                        _verifyPhoneNumber(context, getPhoneNo);
-                      }
-                    },
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hasFloatingPlaceholder: false,
-                      labelText: 'Enter Number',
+              const Divider(
+                height: 15,
+              ),
+              CountryPicker(
+                selectedCountry: _country,
+                dense: false,
+                showFlag: true, //displays flag, true by default
+                showDialingCode:
+                    false, //displays dialing code, false by default
+                showName: true, //displays country name, true by default
+                showCurrency: false, //eg. 'British pound'
+                showCurrencyISO: false, //eg. 'GBP'
+                onChanged: (Country country) {
+                  setState(() {
+                    _country = country;
+                  });
+                },
+              ),
+              const Divider(
+                height: 15,
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: 35,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 5,
+                      child: Text(
+                        '+${_country.dialingCode}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                      ),
                     ),
-                  ),
+                    Flexible(
+                      flex: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 25),
+                        child: TextField(
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25),
+                          onSubmitted: (String val) {
+                            if (val.isNotEmpty && val.length >= 10) {
+                              _phoneNumber = val;
+                              _verifyPhoneNumber(context, getPhoneNo);
+                            }
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hasFloatingPlaceholder: false,
+                            labelText: 'Enter Number',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-        const Divider(
-          height: 45,
-        ),
-        manuallyEnterSMSCode
-            ? _getSMSCode(context)
-            : SizedBox(
-                height: 1,
+              const Divider(
+                height: 45,
               ),
-      ],
-    );
+              manuallyEnterSMSCode
+                  ? _getSMSCode(context)
+                  : SizedBox(
+                      height: 1,
+                    ),
+            ],
+          );
   }
 
   Widget _getSMSCode(BuildContext context) {
@@ -270,6 +280,10 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   // Example code of how to sign in with phone.
   Future<void> _signInWithPhoneNumber(BuildContext context) async {
+    setState(() {
+      _bVerifyingNumber = true;
+    });
+
     final AuthCredential authCredential = PhoneAuthProvider.getCredential(
         verificationId: _verificationId, smsCode: _smsCode);
 
