@@ -7,12 +7,12 @@ import '../models/message.dart';
 // Singleton Class
 class DBHelper {
   static final DBHelper _instance = DBHelper._init();
-  final _verificationKey = 'verificationId';
-  final _smsCodeKey = 'smsCode';
+
   FirebaseDatabase _dbInstance;
 
   final String _dbChildUser = 'Users';
   final String _dbChildMessages = 'Messages';
+  final String _dbActiveChat = 'ActiveChats';
 
   factory DBHelper() {
     return _instance;
@@ -32,9 +32,19 @@ class DBHelper {
     return _dbInstance.reference().child(_dbChildMessages).child(chatId);
   }
 
+  DatabaseReference getActiveChatsReference(String ownerId) {
+    return _dbInstance.reference().child(_dbActiveChat).child(ownerId);
+  }
+
   Future<bool> isUserRegistered(String id) async {
+    DataSnapshot snapShot = await getUserReference().child(id).once();
+
+    return snapShot.value != null;
+  }
+
+  Future<bool> isChatPresent(String ownerId, String toNumber) async {
     DataSnapshot snapShot =
-        await _dbInstance.reference().child(_dbChildUser).child(id).once();
+        await getActiveChatsReference(ownerId).child(toNumber).once();
 
     return snapShot.value != null;
   }
@@ -43,15 +53,7 @@ class DBHelper {
     bool bRet = await isUserRegistered(info.phoneNumber);
 
     if (!bRet) {
-      Map<String, String> data = {
-        _verificationKey: '${info.verificationId}',
-        _smsCodeKey: '${info.smsCode}',
-      };
-      _dbInstance
-          .reference()
-          .child(_dbChildUser)
-          .child(info.phoneNumber)
-          .set(data);
+      await getUserReference().child(info.phoneNumber).set(info.toMap());
     }
   }
 
@@ -69,10 +71,11 @@ class DBHelper {
   }
 
   Future<void> addMessage(String chatId, Message msg) async {
-    await _dbInstance
-        .reference()
-        .child(_dbChildMessages)
-        .child(chatId).push()
-        .set(msg.toMap());
+    await getMessagesReference(chatId).push().set(msg.toMap());
+  }
+
+  Future<void> addChat(
+      String ownerId, String toNumber, Map<String, dynamic> data) async {
+    await getActiveChatsReference(ownerId).child(toNumber).set(data);
   }
 }

@@ -28,6 +28,6 @@ class Message {
   }
 }
 
-Message createMessage(String chatId, String ownderId, String text) {
-  return Message(chatId: chatId, ownerId: ownderId, text: text, dateTime: DateTime.now());
+Message createMessage(String chatId, String ownderId, String text, DateTime timeStamp) {
+  return Message(chatId: chatId, ownerId: ownderId, text: text, dateTime: timeStamp);
 }

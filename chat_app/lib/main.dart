@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './provider/curr_screen_provider.dart';
-import './provider/contacts_provider.dart';
 import './provider/chat_provider.dart';
+import './provider/active_chats_provider.dart';
 import './provider/owner_info_provider.dart';
 
 import './screens/home_screen.dart';
@@ -33,13 +33,13 @@ class ChatApp extends StatelessWidget {
           value: CurrScreenProvider(),
         ),
         ChangeNotifierProvider.value(
-          value: ContactsProvider(),
-        ),
-        ChangeNotifierProvider.value(
           value: ChatProvider(),
         ),
         ChangeNotifierProvider.value(
           value: OwnerInfoProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ActiveChatsProvider(),
         ),
       ],
       child: MaterialApp(

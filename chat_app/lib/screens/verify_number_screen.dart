@@ -7,6 +7,7 @@ import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers/contacts.dart';
 import '../helpers/common.dart';
 import '../provider/owner_info_provider.dart';
 import '../screens/home_screen.dart';
@@ -42,6 +43,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           _phoneNumber, _country.dialingCode, _verificationId, _smsCode, true);
     }
     String ownerNumber = '+' + _country.dialingCode + _phoneNumber;
+    await Contacts().fetchAndSetContacts(ownerNumber);
     Navigator.of(context).pushReplacementNamed(HomeScreen.routeName, arguments: ownerNumber);
   }
 

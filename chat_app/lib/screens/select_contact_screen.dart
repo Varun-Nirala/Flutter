@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../helpers/common.dart';
-import '../provider/contacts_provider.dart';
+import '../helpers/contacts.dart';
 import '../widgets/contact_display.dart';
 
 class SelectContactScreen extends StatelessWidget {
@@ -18,7 +17,7 @@ class SelectContactScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contactList = Provider.of<ContactsProvider>(context, listen: false).registeredContactList;
+    final contactList = Contacts().registeredContactList;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0.0,

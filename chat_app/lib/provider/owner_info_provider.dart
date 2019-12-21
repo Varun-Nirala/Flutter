@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:contacts_service/contacts_service.dart';
 
 import '../models/owner_info.dart';
@@ -8,11 +7,6 @@ import '../helpers/db_helper.dart' as db;
 class OwnerInfoProvider extends ChangeNotifier {
   bool authenticated = false;
   OwnerInfo _ownerInfo;
-
-  String numberKey = 'phoneNumberKey';
-  String countryCodeKey = 'countryCodeKey';
-  String idKey = 'VerificationIdKey';
-  String smsCodeKey = 'smsCodeKey';
 
   bool get isAuthenticated {
     return authenticated;
@@ -28,38 +22,20 @@ class OwnerInfoProvider extends ChangeNotifier {
     );
 
     await db.DBHelper().addUser(_ownerInfo);
-
     authenticated = true;
+    await _ownerInfo.saveToDisk();
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(numberKey, number);
-    await prefs.setString(countryCodeKey, countryCode);
-    await prefs.setString(idKey, verificationId);
-    await prefs.setString(smsCodeKey, smsCode);
     notifyListeners();
   }
 
   Future<OwnerInfo> fetchAndSetOwner() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String number = prefs.getString(numberKey);
-    String countryCode = prefs.getString(countryCodeKey);
-    String verificationId = prefs.getString(idKey);
-    String smsCode = prefs.getString(smsCodeKey);
-
-    if (number == null ||
-        countryCode == null ||
-        verificationId == null ||
-        smsCode == null) {
-          notifyListeners();
+    _ownerInfo = OwnerInfo();
+    bool bRet = await _ownerInfo.loadFromDisk();
+    if (!bRet) {
+      notifyListeners();
+      _ownerInfo = null;
       return null;
     }
-
-    _ownerInfo = OwnerInfo(
-      userNumber: number,
-      userCountryCode: countryCode,
-      verificationId: verificationId,
-      smsCode: smsCode,
-    );
     notifyListeners();
     return _ownerInfo;
   }

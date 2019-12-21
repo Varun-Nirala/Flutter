@@ -1,13 +1,26 @@
-import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../helpers/common.dart' as common;
 import '../helpers/db_helper.dart' as db;
 
-class ContactsProvider extends ChangeNotifier {
+class Contacts {
+  static final Contacts _instance = Contacts._init();
+  String _ownerNumber = '';
   List<Contact> _contactList = [];
   List<Contact> _registeredContactList = [];
+
+  factory Contacts() {
+    return _instance;
+  }
+
+  Contacts._init() {
+    //
+  }
+
+  String get ownerNumber {
+    return _ownerNumber;
+  }
 
   List<Contact> get contactList {
     return [..._contactList];
@@ -21,21 +34,27 @@ class ContactsProvider extends ChangeNotifier {
     return _contactList.firstWhere((contact) => contact.displayName == name);
   }
 
+  Contact findByNumber(String number) {
+    return _contactList.firstWhere((contact) =>
+        number.replaceAll(' ', '') ==
+        contact.phones.first.value.replaceAll(' ', ''));
+  }
+
   Future<void> fetchAndSetContacts(String ownerNumber) async {
     try {
+      _ownerNumber = ownerNumber;
       PermissionStatus permissionStatus = await common.getContactPermission();
       if (permissionStatus == PermissionStatus.granted) {
         Iterable<Contact> contacts = await ContactsService.getContacts();
         _contactList = contacts.toList();
 
-        _registeredContactList = await db.DBHelper().getAllRegisteredUser(contactList);
+        _registeredContactList =
+            await db.DBHelper().getAllRegisteredUser(contactList);
 
-        _registeredContactList.removeWhere( (Contact c) {
+        _registeredContactList.removeWhere((Contact c) {
           String number = c.phones.first.value.replaceAll(' ', '');
           return number == ownerNumber;
         });
-
-        notifyListeners();
       } else {
         common.handleInvalidPermissions(permissionStatus);
       }

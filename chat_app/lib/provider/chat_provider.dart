@@ -10,7 +10,7 @@ import '../helpers/db_helper.dart' as db;
 
 class ChatProvider extends ChangeNotifier {
   StreamSubscription<Event> _onMessageAddedSubscription;
-  final List<Chat> _chats = [];
+  Chat _chat;
 
   @override
   void dispose() {
@@ -18,9 +18,9 @@ class ChatProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  Chat _addNewChat(String chatId) {
-    _chats.add(Chat(chatId: chatId));
-    return _chats.firstWhere((chat) => chat.chatId == chatId);
+  Chat _createChat(String chatId) {
+    _chat = Chat(chatId: chatId);
+    return _chat;
   }
 
   void _onMessageAdded(Event event) {
@@ -36,13 +36,15 @@ class ChatProvider extends ChangeNotifier {
           .onChildAdded
           .listen(_onMessageAdded);
     }
-    return _chats.firstWhere((chat) => chat.chatId == chatId,
-        orElse: () => _addNewChat(chatId));
+    if (_chat == null) {
+      _createChat(chatId);
+    }
+    return _chat;
   }
 
   // Exposed API
-  void addMessage(String chatId, String ownerId, String text) async {
-    Message msg = createMessage(chatId, ownerId, text);
+  void addMessage(String chatId, String ownerId, String text, DateTime timeStamp) async {
+    Message msg = createMessage(chatId, ownerId, text, timeStamp);
     await db.DBHelper().addMessage(chatId, msg);
   }
 

@@ -6,11 +6,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers/common.dart';
+import '../provider/active_chats_provider.dart';
 
-import '../provider/contacts_provider.dart';
+import '../models/active_chats.dart';
+
+import '../helpers/common.dart';
+import '../helpers/contacts.dart';
 
 import '../widgets/home_buttons.dart';
+import '../widgets/active_chats_widget.dart';
 
 import '../screens/select_contact_screen.dart';
 
@@ -29,6 +33,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String _ownerNumber = ModalRoute.of(context).settings.arguments;
+    Map<String, ChatInfo> chatMap =
+        Provider.of<ActiveChatsProvider>(context).getActiveChats().chatMap;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -42,12 +48,15 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         children: <Widget>[
           HomeButtons(),
+          Expanded(
+            child: ActiveChatsWidget(chatMap),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.chat),
         onPressed: () async {
-          await Provider.of<ContactsProvider>(context, listen: false).fetchAndSetContacts(_ownerNumber);
+          await Contacts().fetchAndSetContacts(_ownerNumber);
           Navigator.of(context).pushNamed(SelectContactScreen.routeName);
         },
         backgroundColor: Colors.greenAccent[700],

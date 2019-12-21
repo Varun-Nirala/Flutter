@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,6 +10,11 @@ enum eSCREEN {
   SCREEN_CHATS,
   SCREEN_STATUS,
   SCREEN_CALLS,
+}
+
+String getFormattedTime(String time) {
+  DateTime timeStamp = DateTime.parse(time);
+  return DateFormat.jm().format(timeStamp);
 }
 
 IconButton getSearchIconButton(Function onpress) {

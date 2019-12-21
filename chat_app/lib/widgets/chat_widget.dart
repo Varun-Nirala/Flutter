@@ -7,12 +7,17 @@ import '../models/owner_info.dart';
 import '../helpers/common.dart';
 import '../models/message.dart';
 import '../provider/chat_provider.dart';
+import '../provider/active_chats_provider.dart';
 import '../provider/owner_info_provider.dart';
 
 class ChatWidget extends StatefulWidget {
   final Contact othersContact;
 
   ChatWidget({@required this.othersContact});
+
+  String get othersNumber {
+    return othersContact.phones.first.value.replaceAll(' ', '');
+  }
 
   @override
   _ChatWidgetState createState() => _ChatWidgetState();
@@ -46,7 +51,11 @@ class _ChatWidgetState extends State<ChatWidget> {
 
     if (msgText.isNotEmpty) {
       _msgController.clear();
-      Provider.of<ChatProvider>(context).addMessage(chatId, ownerId, msgText);
+      DateTime timeStamp = DateTime.now();
+      Provider.of<ChatProvider>(context)
+          .addMessage(chatId, ownerId, msgText, timeStamp);
+      Provider.of<ActiveChatsProvider>(context)
+          .addActiveChat(chatId, widget.othersNumber, msgText, timeStamp);
     }
   }
 
@@ -100,7 +109,9 @@ class _ChatWidgetState extends State<ChatWidget> {
       elevation: 2,
       margin: value,
       child: Row(
-        mainAxisAlignment: (msg.ownerId != ownerId) ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment: (msg.ownerId != ownerId)
+            ? MainAxisAlignment.start
+            : MainAxisAlignment.end,
         children: <Widget>[
           Flexible(
             child: Padding(
