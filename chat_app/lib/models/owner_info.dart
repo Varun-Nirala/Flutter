@@ -6,10 +6,10 @@ class OwnerInfo {
   String verificationId;
   String smsCode;
 
-  String numberKey = 'userNumber';
-  String countryCodeKey = 'userCountryCode';
-  String idKey = 'verificationId';
-  String smsCodeKey = 'smsCode';
+  String _numberKey = 'userNumber';
+  String _countryCodeKey = 'userCountryCode';
+  String _idKey = 'verificationId';
+  String _smsCodeKey = 'smsCode';
 
   OwnerInfo({
     this.userNumber,
@@ -24,27 +24,27 @@ class OwnerInfo {
 
   Map<String, dynamic> toMap() {
     return {
-      numberKey: userNumber,
-      countryCodeKey: userCountryCode,
-      idKey: verificationId,
-      smsCodeKey: smsCode,
+      _numberKey: userNumber,
+      _countryCodeKey: userCountryCode,
+      _idKey: verificationId,
+      _smsCodeKey: smsCode,
     };
   }
 
   Future<void> saveToDisk() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(numberKey, userNumber);
-    await prefs.setString(countryCodeKey, userCountryCode);
-    await prefs.setString(idKey, verificationId);
-    await prefs.setString(smsCodeKey, smsCode);
+    await prefs.setString(_numberKey, userNumber);
+    await prefs.setString(_countryCodeKey, userCountryCode);
+    await prefs.setString(_idKey, verificationId);
+    await prefs.setString(_smsCodeKey, smsCode);
   }
 
   Future<bool> loadFromDisk() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userNumber = prefs.getString(numberKey);
-    userCountryCode = prefs.getString(countryCodeKey);
-    verificationId = prefs.getString(idKey);
-    smsCode = prefs.getString(smsCodeKey);
+    userNumber = prefs.getString(_numberKey);
+    userCountryCode = prefs.getString(_countryCodeKey);
+    verificationId = prefs.getString(_idKey);
+    smsCode = prefs.getString(_smsCodeKey);
 
     if (userNumber == null ||
         userCountryCode == null ||

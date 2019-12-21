@@ -60,6 +60,13 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         if (ownerInfo != null) {
           _verificationId = ownerInfo.verificationId;
           _smsCode = ownerInfo.smsCode;
+          _phoneNumber = ownerInfo.userNumber;
+
+          for (Country c in Country.ALL) {
+            if (c.dialingCode == ownerInfo.userCountryCode) {
+              _country = c;
+            }
+          }
           _signInWithPhoneNumber(context);
         } else {
           _bIsLoading = false;
