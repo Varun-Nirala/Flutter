@@ -67,7 +67,15 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
               _country = c;
             }
           }
-          _signInWithPhoneNumber(context);
+          setState(() {
+            if (_firebaseAuth.currentUser() != null) {
+              askPermission = false;
+              successfullySignedIn(context);
+            } else {
+              _status = 'Sign in failed';
+              _bIsLoading = false;
+            }
+          });
         } else {
           _bIsLoading = false;
           askPermission = true;
@@ -328,7 +336,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     ));
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
-      AuthResult authResult = await _firebaseAuth.signInWithCredential(authCredential);
+      await _firebaseAuth.signInWithCredential(authCredential);
       setState(() {
         _smsCode = json.decode(authCredential.toString())['smsCode'];
         _status = 'Received phone auth credential: $authCredential';
