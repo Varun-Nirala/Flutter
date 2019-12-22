@@ -10,16 +10,16 @@ class HomeButtons extends StatelessWidget {
     return Container(
       color: Theme.of(context).appBarTheme.color,
       height: 52,
-      margin: EdgeInsets.all(0),
-      padding: EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
               Container(
                 width: 50,
-                margin: EdgeInsets.all(0),
-                padding: EdgeInsets.all(0),
+                margin: const EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 child: IconButton(
                   icon: Icon(Icons.camera_alt),
                   onPressed: () {},
@@ -77,13 +77,13 @@ class ExpandedFlatButton extends StatelessWidget {
           FlatButton(
             child: Text(title, style: TextStyle(color: textColor)),
             onPressed: () => stateChanged(context, screenButton),
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
           ),
           Container(
             height: 4,
             color: barColor,
-            padding: EdgeInsets.all(0),
-            margin: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
+            margin: const EdgeInsets.all(0),
           ),
         ],
       ),

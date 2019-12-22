@@ -21,7 +21,7 @@ class ContactDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
       child: ListTile(
         leading: getCircularAvatar(contact.avatar),
         title: Text(contact.displayName ??

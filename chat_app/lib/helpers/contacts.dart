@@ -9,6 +9,7 @@ class Contacts {
   String _ownerNumber = '';
   List<Contact> _contactList = [];
   List<Contact> _registeredContactList = [];
+  bool isInitialized = false;
 
   factory Contacts() {
     return _instance;
@@ -23,11 +24,13 @@ class Contacts {
   }
 
   List<Contact> get contactList {
-    return [..._contactList];
+    List<Contact> list = List<Contact>.from(_contactList);
+    return list;
   }
 
   List<Contact> get registeredContactList {
-    return [..._registeredContactList];
+    List<Contact> list = List<Contact>.from(_registeredContactList);
+    return list;
   }
 
   Contact findByName(String name) {
@@ -41,25 +44,28 @@ class Contacts {
   }
 
   Future<void> fetchAndSetContacts(String ownerNumber) async {
-    try {
-      _ownerNumber = ownerNumber;
-      PermissionStatus permissionStatus = await common.getContactPermission();
-      if (permissionStatus == PermissionStatus.granted) {
-        Iterable<Contact> contacts = await ContactsService.getContacts();
-        _contactList = contacts.toList();
+    if (!isInitialized) {
+      try {
+        _ownerNumber = ownerNumber;
+        PermissionStatus permissionStatus = await common.getContactPermission();
+        if (permissionStatus == PermissionStatus.granted) {
+          Iterable<Contact> contacts = await ContactsService.getContacts();
+          _contactList = contacts.toList();
 
-        _registeredContactList =
-            await db.DBHelper().getAllRegisteredUser(contactList);
+          _registeredContactList =
+              await db.DBHelper().getAllRegisteredUser(contactList);
 
-        _registeredContactList.removeWhere((Contact c) {
-          String number = c.phones.first.value.replaceAll(' ', '');
-          return number == ownerNumber;
-        });
-      } else {
-        common.handleInvalidPermissions(permissionStatus);
+          _registeredContactList.removeWhere((Contact c) {
+            String number = c.phones.first.value.replaceAll(' ', '');
+            return number == ownerNumber;
+          });
+          isInitialized = true;
+        } else {
+          common.handleInvalidPermissions(permissionStatus);
+        }
+      } catch (error) {
+        print('');
       }
-    } catch (error) {
-      throw error;
     }
   }
 }

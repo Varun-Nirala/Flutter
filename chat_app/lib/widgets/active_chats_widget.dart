@@ -32,7 +32,7 @@ class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {
   Widget build(BuildContext context) {
     return widget.chatMap.length < 1
         ? Center(
-            child: Text('Start Chatting...'),
+            child: const Text('Start Chatting...'),
           )
         : ListView.builder(
             itemCount: widget.chatMap.length,
@@ -45,7 +45,7 @@ class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {
 
   Widget displayActiveChats(ChatInfo chatInfo) {
     return Card(
-      margin: EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
       child: ListTile(
         leading: getCircularAvatar(chatInfo.contact.avatar),
         title: Text(

@@ -20,7 +20,8 @@ class ActiveChats {
   });
 
   Map<String, ChatInfo> get chatMap {
-    return {..._chatMap};
+    Map<String, ChatInfo> map = Map<String, ChatInfo>.from(_chatMap);
+    return map;
   }
 
   Contact getContact(String chatId) {

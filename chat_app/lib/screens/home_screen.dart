@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.chat),
+        child: const Icon(Icons.chat),
         onPressed: () async {
           await Contacts().fetchAndSetContacts(_ownerNumber);
           Navigator.of(context).pushNamed(SelectContactScreen.routeName);

@@ -9,7 +9,8 @@ class Chat {
   Chat({@required this.chatId});
 
   List<Message> get messages {
-    return [..._messages];
+    List<Message> list = List<Message>.from(_messages);
+    return list;
   }
 
   void addMessage (Message msg) {

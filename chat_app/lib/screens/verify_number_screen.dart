@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,6 +35,30 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   String get getPhoneNo {
     return '+' + _country.dialingCode + _phoneNumber;
+  }
+
+  void _showSnackBar(BuildContext context, String text,
+      [bool bExit = false, int timeInSec = 10]) {
+    Scaffold.of(context).removeCurrentSnackBar();
+    if (bExit) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: timeInSec),
+        content: Text(text),
+        action: SnackBarAction(
+          label: 'Exit',
+          onPressed: () {
+            exit(0);
+          },
+        ),
+      ));
+    } else {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: timeInSec),
+        content: Text(text),
+      ));
+    }
   }
 
   Future<void> successfullySignedIn(BuildContext context) async {
@@ -100,7 +123,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         backgroundColor: Colors.white,
       ),
       body: _bIsLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : Builder(
@@ -123,18 +146,9 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           askPermission = false;
         });
       } else {
-        Future.delayed(Duration(seconds: 10), () => exit(0));
-        Scaffold.of(context).showSnackBar(SnackBar(
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 10),
-          content: Text('Required permissions are not granted. Exiting app...'),
-          action: SnackBarAction(
-            label: 'Exit',
-            onPressed: () {
-              exit(0);
-            },
-          ),
-        ));
+        Future.delayed(const Duration(seconds: 10), () => exit(0));
+        _showSnackBar(context,
+            'Required permissions are not granted. Exiting app...', true);
       }
     } catch (error) {
       throw error;
@@ -152,7 +166,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         Container(
           alignment: Alignment.center,
           child: FlatButton(
-            child: Text('Continue'),
+            child: const Text('Continue'),
             onPressed: () => _onAlertDialogePress(context),
           ),
         ),
@@ -162,7 +176,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   Widget verifyPhoneNumberBody(BuildContext context) {
     return _bVerifyingNumber
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : Column(
@@ -267,7 +281,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
           Flexible(
@@ -302,7 +316,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         verificationId: _verificationId, smsCode: _smsCode);
 
     final AuthResult result =
-        (await _firebaseAuth.signInWithCredential(authCredential));
+        await _firebaseAuth.signInWithCredential(authCredential);
 
     final FirebaseUser currentUser = await _firebaseAuth.currentUser();
 
@@ -321,42 +335,40 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   // Verify the phone number
   void _verifyPhoneNumber(BuildContext context, String phoneNumber) async {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 5),
-      content: Text('Waiting for SMS Code'),
-      action: SnackBarAction(
-        label: 'Exit',
-        onPressed: () {
-          exit(0);
-        },
-      ),
-    ));
+    _showSnackBar(context, 'Waiting for SMS Code', false, 5);
+
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
-      await _firebaseAuth.signInWithCredential(authCredential);
+      _showSnackBar(context, 'Verification Complete. Loging In.', false, 5);
+
       setState(() {
-        _smsCode = json.decode(authCredential.toString())['smsCode'];
-        _status = 'Received phone auth credential: $authCredential';
-        successfullySignedIn(context);
+        _bVerifyingNumber = true;
+      });
+
+      final AuthResult result =
+          await _firebaseAuth.signInWithCredential(authCredential);
+
+      final FirebaseUser currentUser = await _firebaseAuth.currentUser();
+
+      assert(result.user.uid == currentUser.uid);
+      setState(() {
+        if (result.user != null) {
+          askPermission = false;
+          _status = 'Successfully signed in, uid: ' + result.user.uid;
+          successfullySignedIn(context);
+        } else {
+          _status = 'Sign in failed';
+          _bIsLoading = false;
+        }
       });
     };
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) async {
-      Scaffold.of(context).removeCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 10),
-        content: Text(
-            'Authentication Failed. Code: ${authException.code}. Message: ${authException.message}'),
-        action: SnackBarAction(
-          label: 'Exit',
-          onPressed: () {
-            exit(0);
-          },
-        ),
-      ));
+      _showSnackBar(
+          context,
+          'Authentication Failed. Code: ${authException.code}. Message: ${authException.message}',
+          true);
       setState(() {
         _status =
             'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}';
@@ -365,35 +377,13 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-      Scaffold.of(context).removeCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 60),
-        content: Text('SMS Code Sent. Trying Auto Retrieval.'),
-        action: SnackBarAction(
-          label: 'Exit',
-          onPressed: () {
-            exit(0);
-          },
-        ),
-      ));
+      _showSnackBar(context, 'SMS Code Sent. Trying Auto Retrieval.', false, 60);
       _verificationId = verificationId;
     };
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) async {
-      Scaffold.of(context).removeCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 5),
-        content: Text('SMS Code Auto Retrieval timeout. Enter manually.'),
-        action: SnackBarAction(
-          label: 'Exit',
-          onPressed: () {
-            exit(0);
-          },
-        ),
-      ));
+      _showSnackBar(context, 'SMS Code Auto Retrieval timeout. Enter manually.', false, 5);
       _verificationId = verificationId;
       // Ask user to manually input the OTP
       setState(() {

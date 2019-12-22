@@ -82,7 +82,7 @@ class _ChatWidgetState extends State<ChatWidget> {
               ),
             ),
           ),
-          Divider(height: 2),
+          const Divider(height: 2),
           _textComposer(context),
           Divider(
             height: 5,
