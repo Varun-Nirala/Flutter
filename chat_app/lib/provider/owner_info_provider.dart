@@ -12,13 +12,10 @@ class OwnerInfoProvider extends ChangeNotifier {
     return authenticated;
   }
 
-  Future<void> setUserInfo(String number, String countryCode,
-      String verificationId, String smsCode, bool val) async {
+  Future<void> setUserInfo(String number, String countryCode, bool val) async {
     _ownerInfo = OwnerInfo(
       userNumber: number,
       userCountryCode: countryCode,
-      verificationId: verificationId,
-      smsCode: smsCode,
     );
 
     await db.DBHelper().addUser(_ownerInfo);

@@ -41,8 +41,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   Future<void> successfullySignedIn(BuildContext context) async {
     // Save Data to Device Storage
     if (!_bIsLoading) {
-      await Provider.of<OwnerInfoProvider>(context).setUserInfo(
-          _phoneNumber, _country.dialingCode, _verificationId, _smsCode, true);
+      await Provider.of<OwnerInfoProvider>(context)
+          .setUserInfo(_phoneNumber, _country.dialingCode, true);
     }
     String ownerNumber = '+' + _country.dialingCode + _phoneNumber;
     await Contacts().fetchAndSetContacts(ownerNumber);
@@ -58,8 +58,6 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           .fetchAndSetOwner()
           .then((ownerInfo) {
         if (ownerInfo != null) {
-          _verificationId = ownerInfo.verificationId;
-          _smsCode = ownerInfo.smsCode;
           _phoneNumber = ownerInfo.userNumber;
 
           for (Country c in Country.ALL) {

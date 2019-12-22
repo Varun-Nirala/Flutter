@@ -76,5 +76,6 @@ class DBHelper {
   Future<void> addChat(
       String ownerId, String toNumber, Map<String, dynamic> data) async {
     await getActiveChatsReference(ownerId).child(toNumber).set(data);
+    await getActiveChatsReference(toNumber).child(ownerId).set(data);
   }
 }

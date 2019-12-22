@@ -29,6 +29,9 @@ class ActiveChatsProvider extends ChangeNotifier {
     String lastupdated = data.value['lastUpdated'];
 
     Contact contact = Contacts().findByNumber(toNumber);
+    if (toNumber == Contacts().ownerNumber) {
+      contact = Contacts().findByNumber(data.key);
+    }
 
     getActiveChats().addNewchat(
         chatId: chatId,
@@ -53,7 +56,8 @@ class ActiveChatsProvider extends ChangeNotifier {
     return activeChats;
   }
 
-  void addActiveChat(String chatId, String otherNumber, String lastText, DateTime timeStamp) async {
+  void addActiveChat(String chatId, String otherNumber, String lastText,
+      DateTime timeStamp) async {
     String toNumber = otherNumber.replaceAll(' ', '');
     Map<String, dynamic> data = {
       'chatId': chatId,
