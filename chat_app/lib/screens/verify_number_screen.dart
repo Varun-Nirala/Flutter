@@ -268,6 +268,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
             flex: 2,
             child: TextField(
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              onTap: () => Scaffold.of(context).removeCurrentSnackBar(),
               onSubmitted: (String val) {
                 if (val.isNotEmpty) {
                   _smsCode = val;
@@ -337,6 +338,18 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) async {
+      Scaffold.of(context).removeCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 10),
+        content: Text('Authentication Failed. Code: ${authException.code}. Message: ${authException.message}'),
+        action: SnackBarAction(
+          label: 'Exit',
+          onPressed: () {
+            exit(0);
+          },
+        ),
+      ));
       setState(() {
         _status =
             'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}';
@@ -351,6 +364,17 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) async {
       Scaffold.of(context).removeCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 5),
+        content: Text('SMS Code Auto Retrieval timeout. Enter manually.'),
+        action: SnackBarAction(
+          label: 'Exit',
+          onPressed: () {
+            exit(0);
+          },
+        ),
+      ));
       _verificationId = verificationId;
       // Ask user to manually input the OTP
       setState(() {
