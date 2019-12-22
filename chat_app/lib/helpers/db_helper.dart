@@ -20,7 +20,6 @@ class DBHelper {
 
   DBHelper._init() {
     FirebaseDatabase().setPersistenceEnabled(true);
-    FirebaseDatabase().setPersistenceCacheSizeBytes(10000000);
     _dbInstance = FirebaseDatabase.instance;
   }
 

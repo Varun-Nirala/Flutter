@@ -328,7 +328,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     ));
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
-      await _firebaseAuth.signInWithCredential(authCredential);
+      AuthResult authResult = await _firebaseAuth.signInWithCredential(authCredential);
       setState(() {
         _smsCode = json.decode(authCredential.toString())['smsCode'];
         _status = 'Received phone auth credential: $authCredential';
@@ -342,7 +342,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
       Scaffold.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: 10),
-        content: Text('Authentication Failed. Code: ${authException.code}. Message: ${authException.message}'),
+        content: Text(
+            'Authentication Failed. Code: ${authException.code}. Message: ${authException.message}'),
         action: SnackBarAction(
           label: 'Exit',
           onPressed: () {
@@ -358,6 +359,18 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
+      Scaffold.of(context).removeCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 60),
+        content: Text('SMS Code Sent. Trying Auto Retrieval.'),
+        action: SnackBarAction(
+          label: 'Exit',
+          onPressed: () {
+            exit(0);
+          },
+        ),
+      ));
       _verificationId = verificationId;
     };
 
