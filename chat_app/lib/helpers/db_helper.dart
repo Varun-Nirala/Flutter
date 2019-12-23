@@ -61,7 +61,11 @@ class DBHelper {
 
     for (Contact contact in inContacts) {
       String phoneNumber = contact.phones.first.value;
-      bool bRet = await isUserRegistered(phoneNumber.replaceAll(' ', ''));
+      phoneNumber = phoneNumber.replaceAll(' ', '');
+      phoneNumber = phoneNumber.replaceAll('-', '');
+      phoneNumber = phoneNumber.replaceAll('(', '');
+      phoneNumber = phoneNumber.replaceAll(')', '');
+      bool bRet = await isUserRegistered(phoneNumber);
       if (bRet) {
         retContacts.add(contact);
       }

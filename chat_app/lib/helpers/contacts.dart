@@ -49,16 +49,27 @@ class Contacts {
         _ownerNumber = ownerNumber;
         PermissionStatus permissionStatus = await common.getContactPermission();
         if (permissionStatus == PermissionStatus.granted) {
-          Iterable<Contact> contacts = await ContactsService.getContacts();
-          _contactList = contacts.toList();
+          try {
+            _contactList = (await ContactsService.getContacts()).toList();
+            _contactList.removeWhere((Contact c) {
+              return c.phones.isEmpty;
+            });
+          } catch (error) {
+            print('Exception Line 55 :-> $error');
+          }
 
-          _registeredContactList =
-              await db.DBHelper().getAllRegisteredUser(contactList);
+          try {
+            _registeredContactList =
+                await db.DBHelper().getAllRegisteredUser(contactList);
 
-          _registeredContactList.removeWhere((Contact c) {
-            String number = c.phones.first.value.replaceAll(' ', '');
-            return number == ownerNumber;
-          });
+            _registeredContactList.removeWhere((Contact c) {
+              String number = c.phones.first.value.replaceAll(' ', '');
+              return number == ownerNumber;
+            });
+          } catch (error) {
+            print('Exception Line 55 :-> $error');
+          }
+
           isInitialized = true;
         } else {
           common.handleInvalidPermissions(permissionStatus);
