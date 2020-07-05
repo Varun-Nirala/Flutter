@@ -64,7 +64,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   Future<void> successfullySignedIn(BuildContext context) async {
     // Save Data to Device Storage
     if (!_bIsLoading) {
-      await Provider.of<OwnerInfoProvider>(context)
+      await Provider.of<OwnerInfoProvider>(context, listen: false)
           .setUserInfo(_phoneNumber, _country.dialingCode, true);
     }
     String ownerNumber = '+' + _country.dialingCode + _phoneNumber;
