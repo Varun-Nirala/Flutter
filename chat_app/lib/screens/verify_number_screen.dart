@@ -139,7 +139,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   void _onAlertDialogePress(BuildContext context) async {
     try {
       bool val = await getPermissions(
-          [PermissionGroup.contacts, PermissionGroup.storage]);
+          [Permission.contacts, Permission.storage]);
 
       if (val) {
         setState(() {

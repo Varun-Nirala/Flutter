@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
@@ -74,9 +75,9 @@ Widget getCircularButton(IconData iconData, Function onpress) {
   );
 }
 
-Future<bool> getPermissions(List<PermissionGroup> permList) async {
-  Map<PermissionGroup, PermissionStatus> permissionStatus =
-      await PermissionHandler().requestPermissions(permList);
+Future<bool> getPermissions(List<Permission> permList) async {
+  Map<Permission, PermissionStatus> permissionStatus =
+      await permList.request();
 
   bool ret = true;
 
@@ -90,40 +91,32 @@ Future<bool> getPermissions(List<PermissionGroup> permList) async {
 }
 
 Future<PermissionStatus> getContactPermission() async {
-  PermissionStatus permission =
-      await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
-  if (permission != PermissionStatus.granted) {
-    Map<PermissionGroup, PermissionStatus> permissionStatus =
-        await PermissionHandler()
-            .requestPermissions([PermissionGroup.contacts]);
-    return permissionStatus[PermissionGroup.contacts] ??
-        PermissionStatus.unknown;
-  } else {
-    return permission;
+  PermissionStatus permissionStatus = await Permission.contacts.status;
+
+  if(permissionStatus != PermissionStatus.granted || permissionStatus != PermissionStatus.permanentlyDenied)
+  {
+      permissionStatus = await Permission.contacts.request();
   }
+  return permissionStatus;
 }
 
 Future<PermissionStatus> getMediaPermission() async {
-  PermissionStatus permission =
-      await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
-  if (permission != PermissionStatus.granted &&
-      permission != PermissionStatus.disabled) {
-    Map<PermissionGroup, PermissionStatus> permissionStatus =
-        await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    return permissionStatus[PermissionGroup.storage] ??
-        PermissionStatus.unknown;
-  } else {
-    return permission;
+  PermissionStatus permissionStatus = await Permission.storage.status;
+
+  if(permissionStatus != PermissionStatus.granted || permissionStatus != PermissionStatus.permanentlyDenied)
+  {
+      permissionStatus = await Permission.storage.request();
   }
+  return permissionStatus;
 }
 
 void handleInvalidPermissions(PermissionStatus permissionStatus) {
-  if (permissionStatus == PermissionStatus.denied) {
+  if (permissionStatus == PermissionStatus.denied || permissionStatus == PermissionStatus.permanentlyDenied) {
     throw new PlatformException(
         code: "PERMISSION_DENIED",
         message: "Access to location data denied",
         details: null);
-  } else if (permissionStatus == PermissionStatus.disabled) {
+  } else if (permissionStatus == PermissionStatus.restricted) {
     throw new PlatformException(
         code: "PERMISSION_DISABLED",
         message: "Location data is not available on device",
