@@ -8,7 +8,7 @@ import '../models/message.dart';
 class DBHelper {
   static final DBHelper _instance = DBHelper._init();
 
-  FirebaseDatabase _dbInstance;
+  late FirebaseDatabase _dbInstance;
 
   final String _dbChildUser = 'Users';
   final String _dbChildMessages = 'Messages';
@@ -19,20 +19,20 @@ class DBHelper {
   }
 
   DBHelper._init() {
-    FirebaseDatabase().setPersistenceEnabled(true);
     _dbInstance = FirebaseDatabase.instance;
+    _dbInstance.setPersistenceEnabled(true);
   }
 
   DatabaseReference getUserReference() {
-    return _dbInstance.reference().child(_dbChildUser);
+    return _dbInstance.ref().child(_dbChildUser);
   }
 
   DatabaseReference getMessagesReference(String chatId) {
-    return _dbInstance.reference().child(_dbChildMessages).child(chatId);
+    return _dbInstance.ref().child(_dbChildMessages).child(chatId);
   }
 
   DatabaseReference getActiveChatsReference(String ownerId) {
-    return _dbInstance.reference().child(_dbActiveChat).child(ownerId);
+    return _dbInstance.ref().child(_dbActiveChat).child(ownerId);
   }
 
   Future<bool> isUserRegistered(String id) async {
@@ -60,7 +60,7 @@ class DBHelper {
     List<Contact> retContacts = [];
 
     for (Contact contact in inContacts) {
-      String phoneNumber = contact.phones.first.value;
+      String phoneNumber = contact.phones!.first.value!;
       phoneNumber = phoneNumber.replaceAll(' ', '');
       phoneNumber = phoneNumber.replaceAll('-', '');
       phoneNumber = phoneNumber.replaceAll('(', '');

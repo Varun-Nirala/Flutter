@@ -6,7 +6,7 @@ import '../helpers/db_helper.dart' as db;
 
 class OwnerInfoProvider extends ChangeNotifier {
   bool authenticated = false;
-  OwnerInfo _ownerInfo;
+  late OwnerInfo? _ownerInfo;
 
   bool get isAuthenticated {
     return authenticated;
@@ -18,7 +18,7 @@ class OwnerInfoProvider extends ChangeNotifier {
       userCountryCode: countryCode,
     );
 
-    await db.DBHelper().addUser(_ownerInfo);
+    await db.DBHelper().addUser(_ownerInfo!);
     authenticated = true;
     await _ownerInfo.saveToDisk();
 
@@ -34,20 +34,20 @@ class OwnerInfoProvider extends ChangeNotifier {
       return null;
     }
     notifyListeners();
-    return _ownerInfo;
+    return _ownerInfo!;
   }
 
   OwnerInfo get ownerInfo {
-    return _ownerInfo;
+    return _ownerInfo!;
   }
 
   String createChatId(Contact othersContact) {
-    String otherNumber = othersContact.phones.first.value.replaceAll(' ', '');
+    String otherNumber = othersContact.phones!.first.value!.replaceAll(' ', '');
     String chatId;
     // Chat id is smaller number _ bigger number
-    chatId = (_ownerInfo.phoneNumber.compareTo(otherNumber) < 0)
-        ? _ownerInfo.phoneNumber + '_' + otherNumber
-        : otherNumber + '_' + _ownerInfo.phoneNumber;
+    chatId = (_ownerInfo!.phoneNumber.compareTo(otherNumber) < 0)
+        ? _ownerInfo!.phoneNumber + '_' + otherNumber
+        : otherNumber + '_' + _ownerInfo!.phoneNumber;
 
     return chatId;
   }

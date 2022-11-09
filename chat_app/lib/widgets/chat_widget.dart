@@ -13,10 +13,10 @@ import '../provider/owner_info_provider.dart';
 class ChatWidget extends StatefulWidget {
   final Contact othersContact;
 
-  ChatWidget({@required this.othersContact});
+  ChatWidget({required this.othersContact});
 
   String get othersNumber {
-    return othersContact.phones.first.value.replaceAll(' ', '');
+    return othersContact.phones!.first.value!.replaceAll(' ', '');
   }
 
   @override
@@ -24,9 +24,9 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-  String chatId;
-  OwnerInfo ownerInfo;
-  String ownerId;
+  late String chatId;
+  late OwnerInfo ownerInfo;
+  late String ownerId;
   bool _isInit = true;
 
   final _msgController = TextEditingController();
@@ -157,7 +157,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                 style: TextStyle(fontSize: fontSize),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hasFloatingPlaceholder: false,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
                   labelText: 'Type a message',
                 ),
               ),
@@ -177,7 +177,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       width: width,
       child: IconButton(
         icon: Icon(iconData),
-        onPressed: onPress,
+        onPressed: () => onPress(),
       ),
     );
   }

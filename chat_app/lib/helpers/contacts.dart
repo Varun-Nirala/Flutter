@@ -40,7 +40,7 @@ class Contacts {
   Contact findByNumber(String number) {
     return _contactList.firstWhere((contact) =>
         number.replaceAll(' ', '') ==
-        contact.phones.first.value.replaceAll(' ', ''));
+        contact.phones!.first.value!.replaceAll(' ', ''));
   }
 
   Future<void> fetchAndSetContacts(String ownerNumber) async {
@@ -52,7 +52,7 @@ class Contacts {
           try {
             _contactList = (await ContactsService.getContacts()).toList();
             _contactList.removeWhere((Contact c) {
-              return c.phones.isEmpty;
+              return c.phones!.isEmpty;
             });
           } catch (error) {
             print('Exception Line 55 :-> $error');
@@ -63,7 +63,7 @@ class Contacts {
                 await db.DBHelper().getAllRegisteredUser(contactList);
 
             _registeredContactList.removeWhere((Contact c) {
-              String number = c.phones.first.value.replaceAll(' ', '');
+              String number = c.phones!.first.value!.replaceAll(' ', '');
               return number == ownerNumber;
             });
           } catch (error) {

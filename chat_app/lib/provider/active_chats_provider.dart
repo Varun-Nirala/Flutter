@@ -12,7 +12,7 @@ import '../helpers/db_helper.dart' as db;
 class ActiveChatsProvider extends ChangeNotifier {
   StreamSubscription<Event> _onChatAddedSubscription;
   StreamSubscription<Event> _onChatUpdatedSubscription;
-  ActiveChats activeChats;
+  late ActiveChats activeChats;
 
   @override
   void dispose() {
@@ -30,7 +30,7 @@ class ActiveChatsProvider extends ChangeNotifier {
 
     Contact contact = Contacts().findByNumber(toNumber);
     if (toNumber == Contacts().ownerNumber) {
-      contact = Contacts().findByNumber(data.key);
+      contact = Contacts().findByNumber(data.key!);
     }
 
     getActiveChats().addNewchat(

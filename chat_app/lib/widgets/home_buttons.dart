@@ -8,7 +8,7 @@ class HomeButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).appBarTheme.color,
+      color: Theme.of(context).appBarTheme.backgroundColor,
       height: 52,
       margin: const EdgeInsets.all(0),
       padding: const EdgeInsets.all(0),
@@ -42,8 +42,8 @@ class HomeButtons extends StatelessWidget {
 
 class ExpandedFlatButton extends StatelessWidget {
   const ExpandedFlatButton({
-    Key key,
-    @required this.screenButton,
+    Key? key,
+    required this.screenButton,
   }) : super(key: key);
 
   final common.eSCREEN screenButton;
@@ -74,10 +74,14 @@ class ExpandedFlatButton extends StatelessWidget {
     return Expanded(
       child: Column(
         children: <Widget>[
-          FlatButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.teal,
+              fixedSize: Size.fromWidth(100),
+              padding: EdgeInsets.all(0),
+            ),
             child: Text(title, style: TextStyle(color: textColor)),
             onPressed: () => stateChanged(context, screenButton),
-            padding: const EdgeInsets.all(0),
           ),
           Container(
             height: 4,

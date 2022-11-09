@@ -16,7 +16,7 @@ class ActiveChatsWidget extends StatefulWidget {
 }
 
 class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {
-  String ownerNumber;
+  late String ownerNumber;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {
             itemCount: widget.chatMap.length,
             itemBuilder: (BuildContext ctx, int i) {
               String key = widget.chatMap.keys.elementAt(i);
-              return displayActiveChats(widget.chatMap[key]);
+              return displayActiveChats(widget.chatMap[key]!);
             },
           );
   }
@@ -47,7 +47,7 @@ class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {
     return Card(
       margin: const EdgeInsets.all(0),
       child: ListTile(
-        leading: getCircularAvatar(chatInfo.contact.avatar),
+        leading: getCircularAvatar(chatInfo.contact.avatar!),
         title: Text(
           chatInfo.contact.displayName ?? '',
           style: TextStyle(

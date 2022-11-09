@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:contacts_service/contacts_service.dart';
-import 'package:flutter/material.dart';
 
 class ChatInfo {
   Contact contact;
@@ -16,7 +13,7 @@ class ActiveChats {
   final Map<String, ChatInfo> _chatMap = {}; // ChatId is key
 
   ActiveChats({
-    @required this.ownerId,
+    required this.ownerId,
   });
 
   Map<String, ChatInfo> get chatMap {
@@ -25,10 +22,10 @@ class ActiveChats {
   }
 
   Contact getContact(String chatId) {
-    return _chatMap[chatId].contact;
+    return _chatMap[chatId]!.contact;
   }
 
-  ChatInfo getValue(String chatId) {
+  ChatInfo? getValue(String chatId) {
     return _chatMap[chatId];
   }
 
@@ -37,10 +34,7 @@ class ActiveChats {
   }
 
   void addNewchat(
-      {@required String chatId,
-      @required Contact contact,
-      @required String lastText,
-      @required String lastUpdated}) {
+      String chatId, Contact contact, String lastText, String lastUpdated) {
     _chatMap[chatId] = ChatInfo(contact, lastText, lastUpdated);
   }
 }

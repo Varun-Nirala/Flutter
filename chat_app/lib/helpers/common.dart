@@ -1,6 +1,4 @@
 //import 'dart:html';
-import 'dart:typed_data';
-
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +19,7 @@ String getFormattedTime(String time) {
 IconButton getSearchIconButton(Function onpress) {
   return IconButton(
     icon: const Icon(Icons.search),
-    onPressed: onpress,
+    onPressed: () => onpress(),
     padding: const EdgeInsets.all(0),
   );
 }
@@ -29,7 +27,7 @@ IconButton getSearchIconButton(Function onpress) {
 IconButton getMoreIconButton(Function onpress) {
   return IconButton(
     icon: const Icon(Icons.more_vert),
-    onPressed: onpress,
+    onPressed: () => onpress(),
     padding: const EdgeInsets.all(0),
   );
 }
@@ -37,7 +35,7 @@ IconButton getMoreIconButton(Function onpress) {
 IconButton getVideoIconButton(Function onpress) {
   return IconButton(
     icon: const Icon(Icons.videocam),
-    onPressed: onpress,
+    onPressed: () => onpress(),
     padding: const EdgeInsets.all(0),
   );
 }
@@ -45,13 +43,13 @@ IconButton getVideoIconButton(Function onpress) {
 IconButton getCallIconButton(Function onpress) {
   return IconButton(
     icon: const Icon(Icons.call),
-    onPressed: onpress,
+    onPressed: () => onpress(),
     padding: const EdgeInsets.all(0),
   );
 }
 
 CircleAvatar getCircularAvatar(Uint8List avatar) {
-  return (avatar != null && avatar.isNotEmpty)
+  return (avatar.isNotEmpty)
       ? CircleAvatar(backgroundImage: MemoryImage(avatar))
       : CircleAvatar(
           child: Icon(
@@ -69,15 +67,14 @@ Widget getCircularButton(IconData iconData, Function onpress) {
     child: CircleAvatar(
       child: IconButton(
         icon: Icon(iconData),
-        onPressed: onpress,
+        onPressed: () => onpress(),
       ),
     ),
   );
 }
 
 Future<bool> getPermissions(List<Permission> permList) async {
-  Map<Permission, PermissionStatus> permissionStatus =
-      await permList.request();
+  Map<Permission, PermissionStatus> permissionStatus = await permList.request();
 
   bool ret = true;
 
@@ -93,9 +90,9 @@ Future<bool> getPermissions(List<Permission> permList) async {
 Future<PermissionStatus> getContactPermission() async {
   PermissionStatus permissionStatus = await Permission.contacts.status;
 
-  if(permissionStatus != PermissionStatus.granted || permissionStatus != PermissionStatus.permanentlyDenied)
-  {
-      permissionStatus = await Permission.contacts.request();
+  if (permissionStatus != PermissionStatus.granted ||
+      permissionStatus != PermissionStatus.permanentlyDenied) {
+    permissionStatus = await Permission.contacts.request();
   }
   return permissionStatus;
 }
@@ -103,15 +100,16 @@ Future<PermissionStatus> getContactPermission() async {
 Future<PermissionStatus> getMediaPermission() async {
   PermissionStatus permissionStatus = await Permission.storage.status;
 
-  if(permissionStatus != PermissionStatus.granted || permissionStatus != PermissionStatus.permanentlyDenied)
-  {
-      permissionStatus = await Permission.storage.request();
+  if (permissionStatus != PermissionStatus.granted ||
+      permissionStatus != PermissionStatus.permanentlyDenied) {
+    permissionStatus = await Permission.storage.request();
   }
   return permissionStatus;
 }
 
 void handleInvalidPermissions(PermissionStatus permissionStatus) {
-  if (permissionStatus == PermissionStatus.denied || permissionStatus == PermissionStatus.permanentlyDenied) {
+  if (permissionStatus == PermissionStatus.denied ||
+      permissionStatus == PermissionStatus.permanentlyDenied) {
     throw new PlatformException(
         code: "PERMISSION_DENIED",
         message: "Access to location data denied",

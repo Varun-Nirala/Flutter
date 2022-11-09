@@ -8,8 +8,8 @@ class OwnerInfo {
   String _countryCodeKey = 'userCountryCode';
 
   OwnerInfo({
-    this.userNumber,
-    this.userCountryCode,
+    this.userNumber = "",
+    this.userCountryCode = "",
   });
 
   String get phoneNumber {
@@ -31,10 +31,10 @@ class OwnerInfo {
 
   Future<bool> loadFromDisk() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userNumber = prefs.getString(_numberKey);
-    userCountryCode = prefs.getString(_countryCodeKey);
+    userNumber = prefs.getString(_numberKey)!;
+    userCountryCode = prefs.getString(_countryCodeKey)!;
 
-    if (userNumber == null || userCountryCode == null) {
+    if (userNumber.isEmpty || userCountryCode.isEmpty) {
       return false;
     }
     return true;

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 
 import '../models/message.dart';
 import '../models/chat.dart';
@@ -10,7 +10,7 @@ import '../helpers/db_helper.dart' as db;
 
 class ChatProvider extends ChangeNotifier {
   StreamSubscription<Event> _onMessageAddedSubscription;
-  Chat _chat;
+  late Chat? _chat;
 
   @override
   void dispose() {
@@ -20,7 +20,7 @@ class ChatProvider extends ChangeNotifier {
 
   Chat _createChat(String chatId) {
     _chat = Chat(chatId: chatId);
-    return _chat;
+    return _chat!;
   }
 
   void _onMessageAdded(Event event) {
@@ -39,11 +39,12 @@ class ChatProvider extends ChangeNotifier {
     if (_chat == null) {
       _createChat(chatId);
     }
-    return _chat;
+    return _chat!;
   }
 
   // Exposed API
-  void addMessage(String chatId, String ownerId, String text, DateTime timeStamp) async {
+  void addMessage(
+      String chatId, String ownerId, String text, DateTime timeStamp) async {
     Message msg = createMessage(chatId, ownerId, text, timeStamp);
     await db.DBHelper().addMessage(chatId, msg);
   }

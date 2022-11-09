@@ -29,11 +29,11 @@ class ChatScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            getCircularAvatar(_contact.avatar),
+            getCircularAvatar(_contact.avatar!),
             SizedBox(
               width: 10,
             ),
-            Text(_contact.givenName),
+            Text(_contact.givenName ?? ''),
           ],
         ),
         actions: <Widget>[

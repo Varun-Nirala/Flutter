@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_country_picker/flutter_country_picker.dart';
+//import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -138,8 +138,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   void _onAlertDialogePress(BuildContext context) async {
     try {
-      bool val = await getPermissions(
-          [Permission.contacts, Permission.storage]);
+      bool val =
+          await getPermissions([Permission.contacts, Permission.storage]);
 
       if (val) {
         setState(() {
@@ -165,7 +165,12 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
       actions: <Widget>[
         Container(
           alignment: Alignment.center,
-          child: FlatButton(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.teal,
+              fixedSize: Size.fromWidth(100),
+              padding: EdgeInsets.all(0),
+            ),
             child: const Text('Continue'),
             onPressed: () => _onAlertDialogePress(context),
           ),
@@ -377,13 +382,15 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-      _showSnackBar(context, 'SMS Code Sent. Trying Auto Retrieval.', false, 60);
+      _showSnackBar(
+          context, 'SMS Code Sent. Trying Auto Retrieval.', false, 60);
       _verificationId = verificationId;
     };
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) async {
-      _showSnackBar(context, 'SMS Code Auto Retrieval timeout. Enter manually.', false, 5);
+      _showSnackBar(context, 'SMS Code Auto Retrieval timeout. Enter manually.',
+          false, 5);
       _verificationId = verificationId;
       // Ask user to manually input the OTP
       setState(() {
