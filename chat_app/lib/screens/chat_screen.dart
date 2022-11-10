@@ -22,7 +22,8 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Contact _contact = ModalRoute.of(context).settings.arguments;
+    final Contact _contact =
+        (ModalRoute.of(context)!.settings.arguments as Contact);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0.0,

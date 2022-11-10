@@ -36,14 +36,16 @@ class DBHelper {
   }
 
   Future<bool> isUserRegistered(String id) async {
-    DataSnapshot snapShot = await getUserReference().child(id).once();
+    DataSnapshot snapShot =
+        await getUserReference().child(id).once() as DataSnapshot;
 
     return snapShot.value != null;
   }
 
   Future<bool> isChatPresent(String ownerId, String toNumber) async {
-    DataSnapshot snapShot =
-        await getActiveChatsReference(ownerId).child(toNumber).once();
+    DataSnapshot snapShot = await getActiveChatsReference(ownerId)
+        .child(toNumber)
+        .once() as DataSnapshot;
 
     return snapShot.value != null;
   }

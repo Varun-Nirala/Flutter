@@ -20,18 +20,18 @@ class OwnerInfoProvider extends ChangeNotifier {
 
     await db.DBHelper().addUser(_ownerInfo!);
     authenticated = true;
-    await _ownerInfo.saveToDisk();
+    await _ownerInfo!.saveToDisk();
 
     notifyListeners();
   }
 
   Future<OwnerInfo> fetchAndSetOwner() async {
     _ownerInfo = OwnerInfo();
-    bool bRet = await _ownerInfo.loadFromDisk();
+    bool bRet = await _ownerInfo!.loadFromDisk();
     if (!bRet) {
       notifyListeners();
       _ownerInfo = null;
-      return null;
+      return _ownerInfo!;
     }
     notifyListeners();
     return _ownerInfo!;

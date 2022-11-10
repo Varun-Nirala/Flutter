@@ -32,7 +32,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String _ownerNumber = ModalRoute.of(context).settings.arguments;
+    final String _ownerNumber =
+        ModalRoute.of(context)!.settings.arguments.toString();
     Map<String, ChatInfo> chatMap =
         Provider.of<ActiveChatsProvider>(context).getActiveChats().chatMap;
     return Scaffold(

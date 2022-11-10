@@ -10,34 +10,30 @@ import '../helpers/contacts.dart';
 import '../helpers/db_helper.dart' as db;
 
 class ActiveChatsProvider extends ChangeNotifier {
-  StreamSubscription<Event> _onChatAddedSubscription;
-  StreamSubscription<Event> _onChatUpdatedSubscription;
+  late StreamSubscription<DatabaseEvent>? _onChatAddedSubscription;
+  late StreamSubscription<DatabaseEvent>? _onChatUpdatedSubscription;
   late ActiveChats activeChats;
 
   @override
   void dispose() {
-    _onChatAddedSubscription.cancel();
-    _onChatUpdatedSubscription.cancel();
+    _onChatAddedSubscription!.cancel();
+    _onChatUpdatedSubscription!.cancel();
     super.dispose();
   }
 
-  void _onChatAdded(Event event) {
-    DataSnapshot data = event.snapshot;
-    String chatId = data.value['chatId'];
-    String toNumber = data.value['toNumber'];
-    String lastText = data.value['lastText'];
-    String lastupdated = data.value['lastUpdated'];
+  void _onChatAdded(DatabaseEvent event) {
+    Map<String, dynamic> map = Map<String, dynamic>.from(event.snapshot as Map);
+    String chatId = map['chatId'];
+    String toNumber = map['toNumber'];
+    String lastText = map['lastText'];
+    String lastupdated = map['lastUpdated'];
 
     Contact contact = Contacts().findByNumber(toNumber);
     if (toNumber == Contacts().ownerNumber) {
-      contact = Contacts().findByNumber(data.key!);
+      contact = Contacts().findByNumber(event.snapshot.key!);
     }
 
-    getActiveChats().addNewchat(
-        chatId: chatId,
-        contact: contact,
-        lastText: lastText,
-        lastUpdated: lastupdated);
+    getActiveChats().addNewchat(chatId, contact, lastText, lastupdated);
     notifyListeners();
   }
 

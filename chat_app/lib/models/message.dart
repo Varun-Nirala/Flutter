@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:firebase_database/firebase_database.dart';
 
 class Message {
@@ -24,10 +22,11 @@ class Message {
   }
 
   Message.fromSnapshot(DataSnapshot snapshot) {
-    text = snapshot.value['text'];
-    chatId = snapshot.value['chatId'];
-    ownerId = snapshot.value['ownerId'];
-    dateTime = DateTime.parse(snapshot.value['timeStamp']);
+    Map<String, dynamic> map = Map<String, dynamic>.from(snapshot as Map);
+    text = map['text'];
+    chatId = map['chatId'];
+    ownerId = map['ownerId'];
+    dateTime = DateTime.parse(map['timeStamp']);
   }
 }
 

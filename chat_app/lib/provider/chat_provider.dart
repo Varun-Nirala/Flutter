@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 
 //import 'package:firebase_database/firebase_database.dart';
@@ -9,12 +10,12 @@ import '../models/chat.dart';
 import '../helpers/db_helper.dart' as db;
 
 class ChatProvider extends ChangeNotifier {
-  StreamSubscription<Event> _onMessageAddedSubscription;
+  late StreamSubscription<DatabaseEvent>? _onMessageAddedSubscription;
   late Chat? _chat;
 
   @override
   void dispose() {
-    _onMessageAddedSubscription.cancel();
+    _onMessageAddedSubscription!.cancel();
     super.dispose();
   }
 
@@ -23,7 +24,7 @@ class ChatProvider extends ChangeNotifier {
     return _chat!;
   }
 
-  void _onMessageAdded(Event event) {
+  void _onMessageAdded(DatabaseEvent event) {
     Message msg = Message.fromSnapshot(event.snapshot);
     _getChat(msg.chatId).addMessage(msg);
     notifyListeners();

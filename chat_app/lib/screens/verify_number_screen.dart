@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:flutter_country_picker/flutter_country_picker.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,7 @@ class VerifyNumberScreen extends StatefulWidget {
 
 class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  Country _country = Country.IN;
+  late Country _country;
   String _phoneNumber = "";
   String _verificationId = "";
   String _status = "";
@@ -34,14 +34,14 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   var _bVerifyingNumber = false;
 
   String get getPhoneNo {
-    return '+' + _country.dialingCode + _phoneNumber;
+    return '+' + _country.phoneCode + _phoneNumber;
   }
 
   void _showSnackBar(BuildContext context, String text,
       [bool bExit = false, int timeInSec = 10]) {
-    Scaffold.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
     if (bExit) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: timeInSec),
         content: Text(text),
@@ -53,7 +53,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         ),
       ));
     } else {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: timeInSec),
         content: Text(text),
@@ -65,9 +65,9 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     // Save Data to Device Storage
     if (!_bIsLoading) {
       await Provider.of<OwnerInfoProvider>(context, listen: false)
-          .setUserInfo(_phoneNumber, _country.dialingCode, true);
+          .setUserInfo(_phoneNumber, _country.countryCode, true);
     }
-    String ownerNumber = '+' + _country.dialingCode + _phoneNumber;
+    String ownerNumber = '+' + _country.phoneCode + _phoneNumber;
     await Contacts().fetchAndSetContacts(ownerNumber);
     Navigator.of(context)
         .pushReplacementNamed(HomeScreen.routeName, arguments: ownerNumber);
@@ -83,13 +83,14 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         if (ownerInfo != null) {
           _phoneNumber = ownerInfo.userNumber;
 
-          for (Country c in Country.ALL) {
-            if (c.dialingCode == ownerInfo.userCountryCode) {
+          /* @TODO
+          for (Country c in Country.) {
+            if (c.phoneCode == ownerInfo.userCountryCode) {
               _country = c;
             }
-          }
+          }*/
           setState(() {
-            if (_firebaseAuth.currentUser() != null) {
+            if (_firebaseAuth.currentUser != null) {
               askPermission = false;
               successfullySignedIn(context);
             } else {
@@ -203,20 +204,19 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
               const Divider(
                 height: 15,
               ),
-              CountryPicker(
-                selectedCountry: _country,
-                dense: false,
-                showFlag: true, //displays flag, true by default
-                showDialingCode:
-                    false, //displays dialing code, false by default
-                showName: true, //displays country name, true by default
-                showCurrency: false, //eg. 'British pound'
-                showCurrencyISO: false, //eg. 'GBP'
-                onChanged: (Country country) {
-                  setState(() {
-                    _country = country;
-                  });
+              ElevatedButton(
+                onPressed: () {
+                  showCountryPicker(
+                    context: context,
+                    showPhoneCode: false,
+                    onSelect: (Country country) {
+                      setState(() {
+                        _country = country;
+                      });
+                    },
+                  );
                 },
+                child: Text(''),
               ),
               const Divider(
                 height: 15,
@@ -231,7 +231,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                     Flexible(
                       flex: 5,
                       child: Text(
-                        '+${_country.dialingCode}',
+                        '+${_country.phoneCode}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
@@ -251,7 +251,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            hasFloatingPlaceholder: false,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
                             labelText: 'Enter Number',
                           ),
                         ),
@@ -293,7 +293,8 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
             flex: 2,
             child: TextField(
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-              onTap: () => Scaffold.of(context).removeCurrentSnackBar(),
+              onTap: () =>
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar(),
               onSubmitted: (String val) {
                 if (val.isNotEmpty) {
                   _smsCode = val;
@@ -302,7 +303,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
               },
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hasFloatingPlaceholder: false,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
               ),
             ),
           ),
@@ -317,19 +318,19 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
       _bVerifyingNumber = true;
     });
 
-    final AuthCredential authCredential = PhoneAuthProvider.getCredential(
+    final AuthCredential authCredential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: _smsCode);
 
-    final AuthResult result =
+    final UserCredential result =
         await _firebaseAuth.signInWithCredential(authCredential);
 
-    final FirebaseUser currentUser = await _firebaseAuth.currentUser();
+    final User currentUser = await _firebaseAuth.currentUser!;
 
-    assert(result.user.uid == currentUser.uid);
+    assert(result.user!.uid == currentUser.uid);
     setState(() {
       if (result.user != null) {
         askPermission = false;
-        _status = 'Successfully signed in, uid: ' + result.user.uid;
+        _status = 'Successfully signed in, uid: ' + result.user!.uid;
         successfullySignedIn(context);
       } else {
         _status = 'Sign in failed';
@@ -350,16 +351,16 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
         _bVerifyingNumber = true;
       });
 
-      final AuthResult result =
+      final UserCredential result =
           await _firebaseAuth.signInWithCredential(authCredential);
 
-      final FirebaseUser currentUser = await _firebaseAuth.currentUser();
+      final User currentUser = await _firebaseAuth.currentUser!;
 
-      assert(result.user.uid == currentUser.uid);
+      assert(result.user!.uid == currentUser.uid);
       setState(() {
         if (result.user != null) {
           askPermission = false;
-          _status = 'Successfully signed in, uid: ' + result.user.uid;
+          _status = 'Successfully signed in, uid: ' + result.user!.uid;
           successfullySignedIn(context);
         } else {
           _status = 'Sign in failed';
@@ -369,7 +370,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     };
 
     final PhoneVerificationFailed verificationFailed =
-        (AuthException authException) async {
+        (FirebaseAuthException authException) async {
       _showSnackBar(
           context,
           'Authentication Failed. Code: ${authException.code}. Message: ${authException.message}',
@@ -381,7 +382,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     };
 
     final PhoneCodeSent codeSent =
-        (String verificationId, [int forceResendingToken]) async {
+        (String verificationId, [int? forceResendingToken]) async {
       _showSnackBar(
           context, 'SMS Code Sent. Trying Auto Retrieval.', false, 60);
       _verificationId = verificationId;
