@@ -10,6 +10,8 @@ import './screens/home_screen.dart';
 import './screens/select_contact_screen.dart';
 import './screens/chat_screen.dart';
 import './screens/verify_number_screen.dart';
+
+import 'package:firebase_core/firebase_core.dart';
 /*
 cmd:    keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore
           MD5:  C8:47:A3:22:18:8F:35:6C:A0:31:3D:81:F7:9B:B4:5C
@@ -22,7 +24,11 @@ cmd:    keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android
 cmd:    keytool -genkey -v -keystore c:/Users/CODENAME/key.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias key
 */
 
-void main() => runApp(ChatApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(ChatApp());
+}
 
 class ChatApp extends StatelessWidget {
   @override

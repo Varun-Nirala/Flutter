@@ -20,7 +20,7 @@ class VerifyNumberScreen extends StatefulWidget {
 
 class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  late Country _country;
+  Country? _country;
   String _phoneNumber = "";
   String _verificationId = "";
   String _status = "";
@@ -34,7 +34,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
   var _bVerifyingNumber = false;
 
   String get getPhoneNo {
-    return '+' + _country.phoneCode + _phoneNumber;
+    return '+' + _country!.phoneCode + _phoneNumber;
   }
 
   void _showSnackBar(BuildContext context, String text,
@@ -65,9 +65,9 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     // Save Data to Device Storage
     if (!_bIsLoading) {
       await Provider.of<OwnerInfoProvider>(context, listen: false)
-          .setUserInfo(_phoneNumber, _country.countryCode, true);
+          .setUserInfo(_phoneNumber, _country!.countryCode, true);
     }
-    String ownerNumber = '+' + _country.phoneCode + _phoneNumber;
+    String ownerNumber = '+' + _country!.phoneCode + _phoneNumber;
     await Contacts().fetchAndSetContacts(ownerNumber);
     Navigator.of(context)
         .pushReplacementNamed(HomeScreen.routeName, arguments: ownerNumber);
@@ -80,7 +80,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
       Provider.of<OwnerInfoProvider>(context)
           .fetchAndSetOwner()
           .then((ownerInfo) {
-        if (ownerInfo != null) {
+        if (ownerInfo.toString().isEmpty) {
           _phoneNumber = ownerInfo.userNumber;
 
           /* @TODO
@@ -208,7 +208,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                 onPressed: () {
                   showCountryPicker(
                     context: context,
-                    showPhoneCode: false,
+                    showPhoneCode: true,
                     onSelect: (Country country) {
                       setState(() {
                         _country = country;
@@ -216,7 +216,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                     },
                   );
                 },
-                child: Text(''),
+                child: const Text('Show country picker.'),
               ),
               const Divider(
                 height: 15,
@@ -231,7 +231,7 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                     Flexible(
                       flex: 5,
                       child: Text(
-                        '+${_country.phoneCode}',
+                        _country == null ? '' : '+${_country!.phoneCode}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),

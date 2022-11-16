@@ -31,12 +31,11 @@ class OwnerInfo {
 
   Future<bool> loadFromDisk() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userNumber = prefs.getString(_numberKey)!;
-    userCountryCode = prefs.getString(_countryCodeKey)!;
-
-    if (userNumber.isEmpty || userCountryCode.isEmpty) {
-      return false;
+    if (prefs.containsKey(_numberKey) && prefs.containsKey(_countryCodeKey)) {
+      userNumber = prefs.getString(_numberKey)!;
+      userCountryCode = prefs.getString(_countryCodeKey)!;
+      return true;
     }
-    return true;
+    return false;
   }
 }
