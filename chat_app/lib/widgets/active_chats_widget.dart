@@ -12,7 +12,7 @@ class ActiveChatsWidget extends StatefulWidget {
   ActiveChatsWidget(this.chatMap);
 
   @override
-  _ActiveChatsWidgetState createState() => _ActiveChatsWidgetState();
+  State<ActiveChatsWidget> createState() => _ActiveChatsWidgetState();
 }
 
 class _ActiveChatsWidgetState extends State<ActiveChatsWidget> {

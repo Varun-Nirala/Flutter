@@ -20,7 +20,7 @@ class ChatWidget extends StatefulWidget {
   }
 
   @override
-  _ChatWidgetState createState() => _ChatWidgetState();
+  State<ChatWidget> createState() => _ChatWidgetState();
 }
 
 class _ChatWidgetState extends State<ChatWidget> {

@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "712962810192-3a0li4lkndcfj4jrmkkr1us5ngppku8n.apps.googleusercontent.com",
+          "client_id": "712962810192-9of7l5o3uv5g8alg3lvo7sg8rcfit5n8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.niralavarun.flutter.chat_app",
+            "certificate_hash": "5104166ac6a5a19bcf6d4edc7191ea07e7c13374"
+          }
+        },
+        {
+          "client_id": "712962810192-md2df774vno6ujauh750cqp3b4rs62sf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.niralavarun.flutter.chat_app",

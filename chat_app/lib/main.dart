@@ -18,6 +18,12 @@ cmd:    keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android
           SHA1: 88:33:01:7C:83:5C:10:17:FA:DC:D2:8E:33:CA:0C:25:93:CF:FE:3B
           SHA256: 36:01:F1:58:68:D6:3D:02:1B:89:47:86:71:B2:9A:E7:2F:1B:A4:83:51:06:15:1F:84:0B:B1:8F:41:FB:50:74
           Signature algorithm name: SHA1withRSA
+          
+          Certificate fingerprints:
+          SHA1: 00:B8:C0:B7:F0:1C:9B:1F:8F:BA:C0:50:8F:52:88:25:4F:62:4D:0C
+          SHA256: 9B:CD:1E:91:3C:54:7C:DC:C4:0D:06:B1:F8:C2:9F:65:1D:9E:DD:A7:D9:D0:46:92:DA:A0:CE:56:FF:BE:1B:CA
+          Signature algorithm name: SHA1withRSA (weak)
+          Subject Public Key Algorithm: 2048-bit RSA key
           Version: 1
 
 @TODO Have to create the release one

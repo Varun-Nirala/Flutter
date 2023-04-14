@@ -15,7 +15,7 @@ class VerifyNumberScreen extends StatefulWidget {
   static const routeName = "/";
 
   @override
-  _VerifyNumberScreenState createState() => _VerifyNumberScreenState();
+  State<VerifyNumberScreen> createState() => _VerifyNumberScreenState();
 }
 
 class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
